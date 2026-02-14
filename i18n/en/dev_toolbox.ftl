@@ -1,0 +1,17 @@
+app-title = Dev Toolbox
+about = About
+repository = Repository
+view = View
+page-id = Page { $num }
+git-description = Git commit {$hash} on {$date}
+input = Input
+output = Output
+unix-time-converter = Unix Time Converter
+    .unix-timestamp = Unix Timestamp
+    .epoch-seconds = Epoch seconds
+    .epoch-milliseconds = Epoch milliseconds
+    .timezone = Timezone
+    .email-date = Email Date (RFC 2822)
+    .iso-8601-date = ISO Date (ISO 8601/RFC 3339)
+    .human-readable-time = Human Readable Time
+    .now = Now

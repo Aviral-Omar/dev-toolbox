@@ -1,0 +1,41 @@
+[package]
+name = "dev-toolbox"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0"
+description = "Everyday utilities for developers"
+repository = "https://github.com/Aviral-Omar/dev-toolbox.git"
+
+[dependencies]
+chrono = "0.4.43"
+futures-util = "0.3.31"
+i18n-embed = { version = "0.16", features = ["fluent-system", "desktop-requester"] }
+i18n-embed-fl = "0.10"
+# libcosmic = { git = "https://github.com/pop-os/libcosmic.git", default-features = false, features = ["applet"] }
+open = "5.3.2"
+rust-embed = "8.9.0"
+tokio = { version = "1.48.0", features = ["full"] }
+
+[dependencies.libcosmic]
+git = "https://github.com/pop-os/libcosmic.git"
+# See https://github.com/pop-os/libcosmic/blob/master/Cargo.toml for available features.
+features = [
+    # Accessibility support
+    "a11y",
+    # About widget for the app
+    "about",
+    # Uses cosmic-settings-daemon to watch for config file changes
+    # "dbus-config",
+    # Support creating additional application windows.
+    # "multi-window",
+    # On app startup, focuses an existing instance if the app is already open
+    "single-instance",
+    # Uses tokio as the executor for the runtime
+    "tokio",
+    # Windowing support for X11, Windows, Mac, & Redox
+    "winit",
+    # Add Wayland support to winit
+    "wayland",
+    # GPU-accelerated rendering
+    "wgpu",
+]

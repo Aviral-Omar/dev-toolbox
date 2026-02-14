@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Dev Toolbox
+Comment=Everyday utilities for developers
+Type=Application
+Icon=io.github.avomar.dev-toolbox
+Exec=dev-toolbox %F
+Terminal=false
+StartupNotify=true
+Categories=COSMIC
+Keywords=COSMIC
+MimeType=
