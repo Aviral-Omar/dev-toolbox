@@ -201,11 +201,20 @@ impl UtilityPage for DataConverterFormatterPage {
                         self.convert_input();
                     }
                     DataConverterFormatterMessage::CopyText(id) => {
+                        // Content::text adds \n if text doesn't end with it, hence removing it
+                        let mut to_copy: String = String::new();
                         if id == Id::new(INPUT_EDITOR_ID) {
-                            return clipboard::write(self.input_content.text());
+                            to_copy = self.input_content.text();
+                            if !self.input_content.lines().last().unwrap().is_empty() {
+                                to_copy.pop();
+                            }
                         } else if id == Id::new(OUTPUT_EDITOR_ID) {
-                            return clipboard::write(self.output_content.text());
+                            to_copy = self.output_content.text();
+                            if !self.output_content.lines().last().unwrap().is_empty() {
+                                to_copy.pop();
+                            }
                         }
+                        return clipboard::write(to_copy);
                     }
                     DataConverterFormatterMessage::PasteText(id) => {
                         return clipboard::read().map(move |optional_data| match optional_data {
@@ -245,11 +254,15 @@ impl UtilityPage for DataConverterFormatterPage {
 
 impl DataConverterFormatterPage {
     fn convert_input(&mut self) {
+        let mut input = self.input_content.text();
+        if !self.input_content.lines().last().unwrap().is_empty() {
+            input.pop();
+        }
         let input_value: Option<serde_json::Value> = match self.input_format {
-            0 => serde_json::from_str(self.input_content.text().as_str()).ok(),
-            1 => serde_saphyr::from_str(self.input_content.text().as_str()).ok(),
-            2 => quick_xml::de::from_str(self.input_content.text().as_str()).ok(),
-            _ => toml::from_str(self.input_content.text().as_str()).ok(),
+            0 => serde_json::from_str(input.as_str()).ok(),
+            1 => serde_saphyr::from_str(input.as_str()).ok(),
+            2 => quick_xml::de::from_str(input.as_str()).ok(),
+            _ => toml::from_str(input.as_str()).ok(),
         };
         if let Some(value) = input_value {
             self.output_content.perform(text_editor::Action::SelectAll);
