@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 
 mod app;
+mod class;
 mod config;
 pub(crate) mod context_drawer_pages;
 mod i18n;
