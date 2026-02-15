@@ -1,3 +1,4 @@
+pub mod base64_string_encoder_decoder_page;
 pub mod data_converter_formatter_page;
 pub mod unix_time_converter_page;
 

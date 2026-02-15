@@ -10,6 +10,7 @@ pub(crate) mod utility_pages;
 use crate::{
     config::Config,
     utility_pages::{
+        base64_string_encoder_decoder_page::Base64StringEncoderDecoderMessage,
         data_converter_formatter_page::DataConverterFormatterMessage,
         unix_time_converter_page::UnixTimeConverterMessage,
     },
@@ -33,6 +34,7 @@ pub enum Message {
     UpdateConfig(Config),
     UnixTimeConverterMessage(UnixTimeConverterMessage),
     DataConverterFormatterMessage(DataConverterFormatterMessage),
+    Base64StringEncoderDecoderMessage(Base64StringEncoderDecoderMessage),
 }
 
 fn main() -> cosmic::iced::Result {
