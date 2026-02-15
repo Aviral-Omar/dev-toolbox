@@ -6,7 +6,13 @@ pub(crate) mod context_drawer_pages;
 mod i18n;
 pub(crate) mod utility_pages;
 
-use crate::{config::Config, utility_pages::unix_time_converter_page::UnixTimeConverterMessage};
+use crate::{
+    config::Config,
+    utility_pages::{
+        data_converter_formatter_page::DataConverterFormatterMessage,
+        unix_time_converter_page::UnixTimeConverterMessage,
+    },
+};
 
 const REPOSITORY: &str = env!("CARGO_PKG_REPOSITORY");
 const APP_ICON: &[u8] = include_bytes!("../resources/icons/hicolor/scalable/apps/icon.svg");
@@ -25,6 +31,7 @@ pub enum Message {
     ToggleContextPage(ContextPage),
     UpdateConfig(Config),
     UnixTimeConverterMessage(UnixTimeConverterMessage),
+    DataConverterFormatterMessage(DataConverterFormatterMessage),
 }
 
 fn main() -> cosmic::iced::Result {

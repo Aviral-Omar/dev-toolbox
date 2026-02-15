@@ -7,6 +7,7 @@ use {
             Alignment, Length, clipboard,
             widget::{column, row},
         },
+        iced_widget,
         widget::{self, Id, TextInput, text_input},
     },
 };
@@ -109,11 +110,16 @@ fn find_current_timezone_position() -> usize {
 }
 
 fn clipboard_button(id: &str) -> Element<'_, Message> {
-    widget::button::icon(widget::icon::from_name("edit-copy-symbolic"))
-        .on_press(Message::UnixTimeConverterMessage(
-            UnixTimeConverterMessage::CopyText(Id::new(id.to_string())),
-        ))
-        .into()
+    widget::tooltip(
+        widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
+            Message::UnixTimeConverterMessage(UnixTimeConverterMessage::CopyText(Id::new(
+                id.to_string(),
+            ))),
+        ),
+        widget::text(fl!("copy")),
+        iced_widget::tooltip::Position::Bottom,
+    )
+    .into()
 }
 
 pub fn format_offset(offset: FixedOffset) -> String {
