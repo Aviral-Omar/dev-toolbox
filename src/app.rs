@@ -6,19 +6,22 @@ use {
         config::Config,
         context_drawer_pages::{ContextDrawerPage, about_page::AboutPage},
         fl,
-        utility_pages::{UtilityPage, unix_time_converter_page::UnixTimeConverterPage},
+        utility_pages::{
+            UtilityPage, data_converter_formatter_page::DataConverterFormatterPage,
+            unix_time_converter_page::UnixTimeConverterPage,
+        },
     },
     cosmic::{
         ApplicationExt, Apply, Element, Task,
         app::context_drawer,
         cosmic_config::{self, CosmicConfigEntry},
         iced::{
-            Length, Subscription,
+            Length, Padding, Subscription,
             alignment::{Horizontal, Vertical},
         },
         widget::{self, icon, menu, nav_bar},
     },
-    std::collections::HashMap,
+    std::{collections::HashMap, hash::Hash},
 };
 
 /// The application model stores app-specific state used to describe its interface and
@@ -34,7 +37,7 @@ pub struct AppModel {
     key_binds: HashMap<menu::KeyBind, MenuAction>,
     /// Configuration data that persists between application runs.
     config: Config,
-    unix_time_converter_page: UnixTimeConverterPage,
+    utility_pages: HashMap<Page, Box<dyn UtilityPage>>,
 }
 
 /// Create a COSMIC application from the app model
@@ -73,15 +76,20 @@ impl cosmic::Application for AppModel {
             .icon(icon::from_name("accessories-clock-symbolic"))
             .activate();
 
-        // nav.insert()
-        //     .text(fl!("page-id", num = 2))
-        //     .data::<Page>(Page::Page2)
-        //     .icon(icon::from_name("applications-system-symbolic"));
+        nav.insert()
+            .text(fl!("data-converter-formatter"))
+            .data::<Page>(Page::DataConverterFormatter)
+            .icon(icon::from_name("x-office-document-symbolic"));
 
-        // nav.insert()
-        //     .text(fl!("page-id", num = 3))
-        //     .data::<Page>(Page::Page3)
-        //     .icon(icon::from_name("applications-games-symbolic"));
+        let mut utility_pages = HashMap::<Page, Box<dyn UtilityPage>>::new();
+        utility_pages.insert(
+            Page::UnixTimeConverter,
+            Box::new(UnixTimeConverterPage::default()),
+        );
+        utility_pages.insert(
+            Page::DataConverterFormatter,
+            Box::new(DataConverterFormatterPage::default()),
+        );
 
         // Construct the app model with the runtime's core.
         let mut app = AppModel {
@@ -102,7 +110,7 @@ impl cosmic::Application for AppModel {
                     }
                 })
                 .unwrap_or_default(),
-            unix_time_converter_page: UnixTimeConverterPage::default(),
+            utility_pages,
         };
 
         // Create a startup command that sets the window title.
@@ -148,15 +156,18 @@ impl cosmic::Application for AppModel {
     /// Application events will be processed through the view. Any messages emitted by
     /// events received by widgets will be passed to the update method.
     fn view(&self) -> Element<'_, Self::Message> {
-        let content = match self.nav.active_data::<Page>().unwrap() {
-            Page::UnixTimeConverter => self.unix_time_converter_page.get_utility_page(),
-        };
+        let content = self
+            .utility_pages
+            .get(self.nav.active_data::<Page>().unwrap())
+            .unwrap()
+            .get_utility_page();
 
         widget::container(content)
             .width(600)
             .height(Length::Fill)
             .apply(widget::container)
             .width(Length::Fill)
+            .padding(Padding::new(0.0).bottom(8.0))
             .align_x(Horizontal::Center)
             .align_y(Vertical::Center)
             .into()
@@ -214,7 +225,18 @@ impl cosmic::Application for AppModel {
                 }
             },
             Message::UnixTimeConverterMessage(_) => {
-                return self.unix_time_converter_page.handle_message(message);
+                return self
+                    .utility_pages
+                    .get_mut(&Page::UnixTimeConverter)
+                    .unwrap()
+                    .handle_message(message);
+            }
+            Message::DataConverterFormatterMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::DataConverterFormatter)
+                    .unwrap()
+                    .handle_message(message);
             }
         }
         Task::none()
@@ -248,8 +270,10 @@ impl AppModel {
 }
 
 /// The page to display in the application.
+#[derive(Eq, Hash, PartialEq)]
 pub enum Page {
     UnixTimeConverter,
+    DataConverterFormatter,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
