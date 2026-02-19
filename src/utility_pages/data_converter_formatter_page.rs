@@ -1,5 +1,5 @@
 use {
-    crate::{Message, app::AppModel, fl, utility_pages::UtilityPage},
+    crate::{Message, app::AppModel, class::text_editor_class, fl, utility_pages::UtilityPage},
     cosmic::{
         self, Application, Element, Task,
         iced::{
@@ -43,56 +43,6 @@ pub(crate) struct DataConverterFormatterPage {
     input_format: usize,
     output_format: usize,
     selected_indent: usize,
-}
-
-fn text_editor_class(
-    theme: &cosmic::Theme,
-    status: cosmic::widget::text_editor::Status,
-) -> cosmic::iced_widget::text_editor::Style {
-    let cosmic = theme.cosmic();
-    let container = theme.current_container();
-
-    let mut background: cosmic::iced::Color = container.component.base.into();
-    background.a = 0.25;
-    let selection = cosmic.accent.base.into();
-    let value = cosmic.palette.neutral_9.into();
-    let mut placeholder = cosmic.palette.neutral_9;
-    placeholder.alpha = 0.7;
-    let placeholder = placeholder.into();
-    let icon = cosmic.background.on.into();
-
-    match status {
-        cosmic::iced_widget::text_editor::Status::Active
-        | cosmic::iced_widget::text_editor::Status::Disabled => {
-            cosmic::iced_widget::text_editor::Style {
-                background: background.into(),
-                border: cosmic::iced::Border {
-                    radius: cosmic.corner_radii.radius_m.into(),
-                    width: 2.0,
-                    color: container.component.divider.into(),
-                },
-                icon,
-                placeholder,
-                value,
-                selection,
-            }
-        }
-        cosmic::iced_widget::text_editor::Status::Hovered
-        | cosmic::iced_widget::text_editor::Status::Focused => {
-            cosmic::iced_widget::text_editor::Style {
-                background: background.into(),
-                border: cosmic::iced::Border {
-                    radius: cosmic.corner_radii.radius_m.into(),
-                    width: 2.0,
-                    color: cosmic::iced::Color::from(cosmic.accent.base),
-                },
-                icon,
-                placeholder,
-                value,
-                selection,
-            }
-        }
-    }
 }
 
 impl UtilityPage for DataConverterFormatterPage {
@@ -251,11 +201,20 @@ impl UtilityPage for DataConverterFormatterPage {
                         self.convert_input();
                     }
                     DataConverterFormatterMessage::CopyText(id) => {
+                        // Content::text adds \n if text doesn't end with it, hence removing it
+                        let mut to_copy: String = String::new();
                         if id == Id::new(INPUT_EDITOR_ID) {
-                            return clipboard::write(self.input_content.text());
+                            to_copy = self.input_content.text();
+                            if !self.input_content.lines().last().unwrap().is_empty() {
+                                to_copy.pop();
+                            }
                         } else if id == Id::new(OUTPUT_EDITOR_ID) {
-                            return clipboard::write(self.output_content.text());
+                            to_copy = self.output_content.text();
+                            if !self.output_content.lines().last().unwrap().is_empty() {
+                                to_copy.pop();
+                            }
                         }
+                        return clipboard::write(to_copy);
                     }
                     DataConverterFormatterMessage::PasteText(id) => {
                         return clipboard::read().map(move |optional_data| match optional_data {
@@ -295,11 +254,15 @@ impl UtilityPage for DataConverterFormatterPage {
 
 impl DataConverterFormatterPage {
     fn convert_input(&mut self) {
+        let mut input = self.input_content.text();
+        if !self.input_content.lines().last().unwrap().is_empty() {
+            input.pop();
+        }
         let input_value: Option<serde_json::Value> = match self.input_format {
-            0 => serde_json::from_str(self.input_content.text().as_str()).ok(),
-            1 => serde_saphyr::from_str(self.input_content.text().as_str()).ok(),
-            2 => quick_xml::de::from_str(self.input_content.text().as_str()).ok(),
-            _ => toml::from_str(self.input_content.text().as_str()).ok(),
+            0 => serde_json::from_str(input.as_str()).ok(),
+            1 => serde_saphyr::from_str(input.as_str()).ok(),
+            2 => quick_xml::de::from_str(input.as_str()).ok(),
+            _ => toml::from_str(input.as_str()).ok(),
         };
         if let Some(value) = input_value {
             self.output_content.perform(text_editor::Action::SelectAll);

@@ -7,7 +7,8 @@ use {
         context_drawer_pages::{ContextDrawerPage, about_page::AboutPage},
         fl,
         utility_pages::{
-            UtilityPage, data_converter_formatter_page::DataConverterFormatterPage,
+            UtilityPage, base64_string_encoder_decoder_page::Base64StringEncoderDecoderPage,
+            data_converter_formatter_page::DataConverterFormatterPage,
             unix_time_converter_page::UnixTimeConverterPage,
         },
     },
@@ -81,6 +82,11 @@ impl cosmic::Application for AppModel {
             .data::<Page>(Page::DataConverterFormatter)
             .icon(icon::from_name("x-office-document-symbolic"));
 
+        nav.insert()
+            .text(fl!("base64-string-encoder-decoder"))
+            .data::<Page>(Page::Base64StringEncoderDecoder)
+            .icon(icon::from_name("x-office-document-symbolic"));
+
         let mut utility_pages = HashMap::<Page, Box<dyn UtilityPage>>::new();
         utility_pages.insert(
             Page::UnixTimeConverter,
@@ -89,6 +95,10 @@ impl cosmic::Application for AppModel {
         utility_pages.insert(
             Page::DataConverterFormatter,
             Box::new(DataConverterFormatterPage::default()),
+        );
+        utility_pages.insert(
+            Page::Base64StringEncoderDecoder,
+            Box::new(Base64StringEncoderDecoderPage::default()),
         );
 
         // Construct the app model with the runtime's core.
@@ -238,6 +248,13 @@ impl cosmic::Application for AppModel {
                     .unwrap()
                     .handle_message(message);
             }
+            Message::Base64StringEncoderDecoderMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::Base64StringEncoderDecoder)
+                    .unwrap()
+                    .handle_message(message);
+            }
         }
         Task::none()
     }
@@ -274,6 +291,7 @@ impl AppModel {
 pub enum Page {
     UnixTimeConverter,
     DataConverterFormatter,
+    Base64StringEncoderDecoder,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
