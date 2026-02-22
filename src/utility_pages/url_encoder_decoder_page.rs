@@ -3,7 +3,6 @@ use {
         Message, app::AppModel, class::text_editor_class, fl, i18n::LANGUAGE_LOADER,
         utility_pages::UtilityPage,
     },
-    base64::Engine,
     cosmic::{
         self, Application, Element, Task,
         iced::{
@@ -18,6 +17,7 @@ use {
         },
     },
     std::sync::Arc,
+    urlencoding,
 };
 
 const INPUT_EDITOR_ID: &str = "input-editor";
@@ -25,11 +25,10 @@ const OUTPUT_EDITOR_ID: &str = "output-editor";
 const OPERATIONS: [&str; 2] = ["encode", "decode"];
 
 #[derive(Debug, Clone)]
-pub enum Base64StringEncoderDecoderMessage {
+pub enum UrlEncoderDecoderMessage {
     InputEditorAction(text_editor::Action),
     OutputEditorAction(text_editor::Action),
     OperationChanged(usize),
-    UrlSafeToggled(bool),
     ConvertInput,
     CopyText(Id),
     PasteText(Id),
@@ -37,20 +36,28 @@ pub enum Base64StringEncoderDecoderMessage {
     NoOp,
 }
 
-#[derive(Default)]
-pub(crate) struct Base64StringEncoderDecoderPage {
+pub(crate) struct UrlEncoderDecoderPage {
     input_content: text_editor::Content,
     output_content: text_editor::Content,
     selected_operation: usize,
-    url_safe: bool,
 }
 
-impl UtilityPage for Base64StringEncoderDecoderPage {
+impl Default for UrlEncoderDecoderPage {
+    fn default() -> Self {
+        UrlEncoderDecoderPage {
+            input_content: text_editor::Content::default(),
+            output_content: text_editor::Content::default(),
+            selected_operation: 1,
+        }
+    }
+}
+
+impl UtilityPage for UrlEncoderDecoderPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
 
         let header = widget::row::with_capacity(2)
-            .push(widget::text::title2(fl!("base64-string-encoder-decoder")))
+            .push(widget::text::title2(fl!("url-encoder-decoder")))
             .align_y(Alignment::End)
             .spacing(space_s);
 
@@ -58,27 +65,25 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
             widget::text::title4(fl!("input"))
                 .width(Length::Fill)
                 .align_x(Alignment::Start),
-            widget::button::text(fl!("convert")).on_press(
-                Message::Base64StringEncoderDecoderMessage(
-                    Base64StringEncoderDecoderMessage::ConvertInput
-                )
-            ),
+            widget::button::text(fl!("convert")).on_press(Message::UrlEncoderDecoderMessage(
+                UrlEncoderDecoderMessage::ConvertInput
+            )),
             widget::dropdown(
                 OPERATIONS
                     .map(|operation| LANGUAGE_LOADER.get(operation))
                     .to_vec(),
                 Some(self.selected_operation),
                 |selection| {
-                    Message::Base64StringEncoderDecoderMessage(
-                        Base64StringEncoderDecoderMessage::OperationChanged(selection),
-                    )
+                    Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::OperationChanged(
+                        selection,
+                    ))
                 },
             ),
             widget::tooltip(
                 widget::button::icon(widget::icon::from_name("edit-paste-symbolic")).on_press(
-                    Message::Base64StringEncoderDecoderMessage(
-                        Base64StringEncoderDecoderMessage::PasteText(Id::new(INPUT_EDITOR_ID)),
-                    )
+                    Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::PasteText(
+                        Id::new(INPUT_EDITOR_ID)
+                    ),)
                 ),
                 widget::text(fl!("paste")),
                 iced_widget::tooltip::Position::Bottom,
@@ -93,9 +98,9 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
                 text_editor_class,
             )))
             .on_action(|action| {
-                Message::Base64StringEncoderDecoderMessage(
-                    Base64StringEncoderDecoderMessage::InputEditorAction(action),
-                )
+                Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::InputEditorAction(
+                    action,
+                ))
             })
             .key_binding(|key_press| {
                 if key_press.key == Key::Named(key::Named::Tab)
@@ -111,21 +116,11 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
             widget::text::title4(fl!("output"))
                 .width(Length::Fill)
                 .align_x(Alignment::Start),
-            widget::container(
-                widget::checkbox(self.url_safe,)
-                    .label(fl!("base64-string-encoder-decoder", "url-safe"),)
-                    .on_toggle(|url_safe| {
-                        Message::Base64StringEncoderDecoderMessage(
-                            Base64StringEncoderDecoderMessage::UrlSafeToggled(url_safe),
-                        )
-                    }),
-            )
-            .padding(Padding::new(0.0).right(8.0)),
             widget::tooltip(
                 widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::Base64StringEncoderDecoderMessage(
-                        Base64StringEncoderDecoderMessage::CopyText(Id::new(OUTPUT_EDITOR_ID)),
-                    ),
+                    Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::CopyText(Id::new(
+                        OUTPUT_EDITOR_ID
+                    )),),
                 ),
                 widget::text(fl!("copy")),
                 iced_widget::tooltip::Position::Bottom,
@@ -141,9 +136,9 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
                 text_editor_class,
             )))
             .on_action(|action| {
-                Message::Base64StringEncoderDecoderMessage(
-                    Base64StringEncoderDecoderMessage::OutputEditorAction(action),
-                )
+                Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::OutputEditorAction(
+                    action,
+                ))
             })
             .into();
 
@@ -164,30 +159,26 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
         message: Message,
     ) -> Task<cosmic::Action<<AppModel as Application>::Message>> {
         match message {
-            Message::Base64StringEncoderDecoderMessage(data_converter_formatter_message) => {
+            Message::UrlEncoderDecoderMessage(data_converter_formatter_message) => {
                 match data_converter_formatter_message {
-                    Base64StringEncoderDecoderMessage::InputEditorAction(action) => {
+                    UrlEncoderDecoderMessage::InputEditorAction(action) => {
                         self.input_content.perform(action);
                     }
-                    Base64StringEncoderDecoderMessage::OutputEditorAction(action) => {
+                    UrlEncoderDecoderMessage::OutputEditorAction(action) => {
                         if !action.is_edit() {
                             self.output_content.perform(action);
                         }
                     }
-                    Base64StringEncoderDecoderMessage::OperationChanged(selection) => {
+                    UrlEncoderDecoderMessage::OperationChanged(selection) => {
                         if selection != self.selected_operation {
                             self.selected_operation = selection;
                             self.convert_input();
                         }
                     }
-                    Base64StringEncoderDecoderMessage::UrlSafeToggled(url_safe) => {
-                        self.url_safe = url_safe;
+                    UrlEncoderDecoderMessage::ConvertInput => {
                         self.convert_input();
                     }
-                    Base64StringEncoderDecoderMessage::ConvertInput => {
-                        self.convert_input();
-                    }
-                    Base64StringEncoderDecoderMessage::CopyText(id) => {
+                    UrlEncoderDecoderMessage::CopyText(id) => {
                         let mut to_copy: String = String::new();
                         if id == Id::new(INPUT_EDITOR_ID) {
                             to_copy = self.input_content.text();
@@ -196,24 +187,17 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
                         }
                         return clipboard::write(to_copy);
                     }
-                    Base64StringEncoderDecoderMessage::PasteText(id) => {
+                    UrlEncoderDecoderMessage::PasteText(id) => {
                         return clipboard::read().map(move |optional_data| match optional_data {
-                            Some(data) => {
-                                cosmic::Action::App(Message::Base64StringEncoderDecoderMessage(
-                                    Base64StringEncoderDecoderMessage::ReplaceText(
-                                        id.clone(),
-                                        data,
-                                    ),
-                                ))
-                            }
-                            None => {
-                                cosmic::Action::App(Message::Base64StringEncoderDecoderMessage(
-                                    Base64StringEncoderDecoderMessage::NoOp,
-                                ))
-                            }
+                            Some(data) => cosmic::Action::App(Message::UrlEncoderDecoderMessage(
+                                UrlEncoderDecoderMessage::ReplaceText(id.clone(), data),
+                            )),
+                            None => cosmic::Action::App(Message::UrlEncoderDecoderMessage(
+                                UrlEncoderDecoderMessage::NoOp,
+                            )),
                         });
                     }
-                    Base64StringEncoderDecoderMessage::ReplaceText(id, text) => {
+                    UrlEncoderDecoderMessage::ReplaceText(id, text) => {
                         if id == Id::new(INPUT_EDITOR_ID) {
                             self.input_content.perform(text_editor::Action::SelectAll);
                             self.input_content.perform(text_editor::Action::Edit(
@@ -226,7 +210,7 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
                             ));
                         }
                     }
-                    Base64StringEncoderDecoderMessage::NoOp => {}
+                    UrlEncoderDecoderMessage::NoOp => {}
                 }
             }
             _ => {
@@ -237,13 +221,8 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
     }
 }
 
-impl Base64StringEncoderDecoderPage {
+impl UrlEncoderDecoderPage {
     fn convert_input(&mut self) {
-        let engine = if self.url_safe {
-            base64::engine::general_purpose::URL_SAFE
-        } else {
-            base64::engine::general_purpose::STANDARD
-        };
         let input = self.input_content.text();
         match self.selected_operation {
             0 => {
@@ -252,22 +231,23 @@ impl Base64StringEncoderDecoderPage {
                     .perform(text_editor::Action::Edit(text_editor::Edit::Delete));
                 self.output_content
                     .perform(text_editor::Action::Edit(text_editor::Edit::Paste(
-                        Arc::new(engine.encode(input.trim().as_bytes())),
+                        Arc::new(urlencoding::encode(input.as_str()).into_owned()),
                     )));
             }
             _ => {
-                let decode_result = engine.decode(input.trim());
-                if let Ok(bytes) = decode_result {
-                    self.output_content.perform(text_editor::Action::SelectAll);
-                    self.output_content
-                        .perform(text_editor::Action::Edit(text_editor::Edit::Delete));
-                    self.output_content.perform(text_editor::Action::Edit(
-                        text_editor::Edit::Paste(Arc::new(
-                            String::from_utf8_lossy(bytes.as_slice()).into_owned(),
-                        )),
-                    ));
-                } else if let Err(err) = decode_result {
-                    println!("Base64 Decoding Error: {}", err);
+                let decoded_url = urlencoding::decode(input.as_str());
+                match decoded_url {
+                    Ok(decoded_url) => {
+                        self.output_content.perform(text_editor::Action::SelectAll);
+                        self.output_content
+                            .perform(text_editor::Action::Edit(text_editor::Edit::Delete));
+                        self.output_content.perform(text_editor::Action::Edit(
+                            text_editor::Edit::Paste(Arc::new(decoded_url.into_owned())),
+                        ));
+                    }
+                    Err(err) => {
+                        println!("Error decoding URL: {:?}", err);
+                    }
                 }
             }
         }

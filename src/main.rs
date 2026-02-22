@@ -13,6 +13,7 @@ use crate::{
         base64_string_encoder_decoder_page::Base64StringEncoderDecoderMessage,
         data_converter_formatter_page::DataConverterFormatterMessage,
         unix_time_converter_page::UnixTimeConverterMessage,
+        url_encoder_decoder_page::UrlEncoderDecoderMessage,
     },
 };
 
@@ -35,6 +36,7 @@ pub enum Message {
     UnixTimeConverterMessage(UnixTimeConverterMessage),
     DataConverterFormatterMessage(DataConverterFormatterMessage),
     Base64StringEncoderDecoderMessage(Base64StringEncoderDecoderMessage),
+    UrlEncoderDecoderMessage(UrlEncoderDecoderMessage),
 }
 
 fn main() -> cosmic::iced::Result {

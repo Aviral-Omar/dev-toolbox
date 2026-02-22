@@ -10,6 +10,7 @@ use {
             UtilityPage, base64_string_encoder_decoder_page::Base64StringEncoderDecoderPage,
             data_converter_formatter_page::DataConverterFormatterPage,
             unix_time_converter_page::UnixTimeConverterPage,
+            url_encoder_decoder_page::UrlEncoderDecoderPage,
         },
     },
     cosmic::{
@@ -85,7 +86,12 @@ impl cosmic::Application for AppModel {
         nav.insert()
             .text(fl!("base64-string-encoder-decoder"))
             .data::<Page>(Page::Base64StringEncoderDecoder)
-            .icon(icon::from_name("x-office-document-symbolic"));
+            .icon(icon::from_name("object-flip-horizontal-symbolic"));
+
+        nav.insert()
+            .text(fl!("url-encoder-decoder"))
+            .data::<Page>(Page::UrlEncoderDecoder)
+            .icon(icon::from_name("link-symbolic"));
 
         let mut utility_pages = HashMap::<Page, Box<dyn UtilityPage>>::new();
         utility_pages.insert(
@@ -99,6 +105,10 @@ impl cosmic::Application for AppModel {
         utility_pages.insert(
             Page::Base64StringEncoderDecoder,
             Box::new(Base64StringEncoderDecoderPage::default()),
+        );
+        utility_pages.insert(
+            Page::UrlEncoderDecoder,
+            Box::new(UrlEncoderDecoderPage::default()),
         );
 
         // Construct the app model with the runtime's core.
@@ -135,7 +145,11 @@ impl cosmic::Application for AppModel {
             menu::root(fl!("view")).apply(Element::from),
             menu::items(
                 &self.key_binds,
-                vec![menu::Item::Button(fl!("about"), None, MenuAction::About)],
+                vec![menu::Item::Button(
+                    format!("{} {}", fl!("about"), fl!("app-title")),
+                    None,
+                    MenuAction::About,
+                )],
             ),
         )]);
 
@@ -173,11 +187,11 @@ impl cosmic::Application for AppModel {
             .get_utility_page();
 
         widget::container(content)
-            .width(600)
+            .max_width(1000)
             .height(Length::Fill)
             .apply(widget::container)
             .width(Length::Fill)
-            .padding(Padding::new(0.0).bottom(8.0))
+            .padding(Padding::new(0.0).horizontal(8.0).bottom(8.0))
             .align_x(Horizontal::Center)
             .align_y(Vertical::Center)
             .into()
@@ -255,6 +269,13 @@ impl cosmic::Application for AppModel {
                     .unwrap()
                     .handle_message(message);
             }
+            Message::UrlEncoderDecoderMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::UrlEncoderDecoder)
+                    .unwrap()
+                    .handle_message(message);
+            }
         }
         Task::none()
     }
@@ -292,6 +313,7 @@ pub enum Page {
     UnixTimeConverter,
     DataConverterFormatter,
     Base64StringEncoderDecoder,
+    UrlEncoderDecoder,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

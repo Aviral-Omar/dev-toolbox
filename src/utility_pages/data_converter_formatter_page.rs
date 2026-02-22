@@ -5,10 +5,13 @@ use {
         iced::{
             Alignment, Length, Padding, clipboard,
             keyboard::{Key, key},
-            widget::{column, row, text_editor},
+            widget::{column, row},
         },
         iced_widget,
-        widget::{self, Id, text_editor::Binding},
+        widget::{
+            self, Id,
+            text_editor::{self, Binding, TextEditor},
+        },
     },
     quick_xml,
     serde::Serialize,
@@ -82,7 +85,7 @@ impl UtilityPage for DataConverterFormatterPage {
         ]
         .into();
 
-        let input_editor: Element<'_, Message> = text_editor(&self.input_content)
+        let input_editor: Element<'_, Message> = TextEditor::new(&self.input_content)
             .padding(Padding::new(12.0))
             .height(Length::Fill)
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
@@ -95,7 +98,7 @@ impl UtilityPage for DataConverterFormatterPage {
             })
             .key_binding(|key_press| {
                 if key_press.key == Key::Named(key::Named::Tab)
-                    && key_press.status == text_editor::Status::Focused
+                    && matches!(key_press.status, text_editor::Status::Focused { .. })
                 {
                     return Some(Binding::Insert('\t'));
                 }
@@ -146,7 +149,7 @@ impl UtilityPage for DataConverterFormatterPage {
             ))
             .into();
 
-        let output_editor: Element<'_, Message> = text_editor(&self.output_content)
+        let output_editor: Element<'_, Message> = TextEditor::new(&self.output_content)
             .padding(Padding::new(12.0))
             .height(Length::Fill)
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
@@ -201,18 +204,11 @@ impl UtilityPage for DataConverterFormatterPage {
                         self.convert_input();
                     }
                     DataConverterFormatterMessage::CopyText(id) => {
-                        // Content::text adds \n if text doesn't end with it, hence removing it
                         let mut to_copy: String = String::new();
                         if id == Id::new(INPUT_EDITOR_ID) {
                             to_copy = self.input_content.text();
-                            if !self.input_content.lines().last().unwrap().is_empty() {
-                                to_copy.pop();
-                            }
                         } else if id == Id::new(OUTPUT_EDITOR_ID) {
                             to_copy = self.output_content.text();
-                            if !self.output_content.lines().last().unwrap().is_empty() {
-                                to_copy.pop();
-                            }
                         }
                         return clipboard::write(to_copy);
                     }
@@ -254,10 +250,7 @@ impl UtilityPage for DataConverterFormatterPage {
 
 impl DataConverterFormatterPage {
     fn convert_input(&mut self) {
-        let mut input = self.input_content.text();
-        if !self.input_content.lines().last().unwrap().is_empty() {
-            input.pop();
-        }
+        let input = self.input_content.text();
         let input_value: Option<serde_json::Value> = match self.input_format {
             0 => serde_json::from_str(input.as_str()).ok(),
             1 => serde_saphyr::from_str(input.as_str()).ok(),
