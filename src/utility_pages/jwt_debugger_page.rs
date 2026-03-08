@@ -88,24 +88,6 @@ impl Default for JwtDebuggerPage {
     }
 }
 
-// fn algorithm_from_str(algorithm: &str) -> Option<Algorithm> {
-//     match algorithm {
-//         "HS256" => Some(Algorithm::HS256),
-//         "HS384" => Some(Algorithm::HS384),
-//         "HS512" => Some(Algorithm::HS512),
-//         "RS256" => Some(Algorithm::RS256),
-//         "RS384" => Some(Algorithm::RS384),
-//         "RS512" => Some(Algorithm::RS512),
-//         "ES256" => Some(Algorithm::ES256),
-//         "ES384" => Some(Algorithm::ES384),
-//         "PS256" => Some(Algorithm::PS256),
-//         "PS384" => Some(Algorithm::PS384),
-//         "PS512" => Some(Algorithm::PS512),
-//         "EdDSA" => Some(Algorithm::EdDSA),
-//         _ => None,
-//     }
-// }
-
 fn algorithm_type(algorithm: Algorithm) -> AlgorithmType {
     match algorithm {
         Algorithm::HS256 | Algorithm::HS384 | Algorithm::HS512 => AlgorithmType::Symmetric,
