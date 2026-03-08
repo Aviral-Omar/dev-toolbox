@@ -10,7 +10,7 @@ use {
             keyboard::{Key, key},
             widget::{column, row},
         },
-        iced_widget,
+        iced_core, iced_widget,
         widget::{
             self, Id,
             text_editor::{self, Binding, TextEditor},
@@ -97,6 +97,7 @@ impl UtilityPage for UrlEncoderDecoderPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
+            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::InputEditorAction(
                     action,
@@ -135,6 +136,7 @@ impl UtilityPage for UrlEncoderDecoderPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
+            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::OutputEditorAction(
                     action,

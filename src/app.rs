@@ -9,22 +9,25 @@ use {
         utility_pages::{
             UtilityPage, base64_string_encoder_decoder_page::Base64StringEncoderDecoderPage,
             data_converter_formatter_page::DataConverterFormatterPage,
-            unix_time_converter_page::UnixTimeConverterPage,
+            jwt_debugger_page::JwtDebuggerPage, unix_time_converter_page::UnixTimeConverterPage,
             url_encoder_decoder_page::UrlEncoderDecoderPage,
         },
     },
     cosmic::{
-        ApplicationExt, Apply, Element, Task,
+        self, ApplicationExt, Apply, Element, Task,
         app::context_drawer,
         cosmic_config::{self, CosmicConfigEntry},
         iced::{
             Length, Padding, Subscription,
             alignment::{Horizontal, Vertical},
         },
-        widget::{self, icon, menu, nav_bar},
+        widget::{self, icon, menu, nav_bar, responsive_menu_bar},
     },
-    std::{collections::HashMap, hash::Hash},
+    std::{collections::HashMap, hash::Hash, sync::LazyLock},
 };
+
+static MENU_ID: LazyLock<cosmic::widget::Id> =
+    LazyLock::new(|| cosmic::widget::Id::new("responsive-menu"));
 
 /// The application model stores app-specific state used to describe its interface and
 /// drive its logic.
@@ -93,6 +96,15 @@ impl cosmic::Application for AppModel {
             .data::<Page>(Page::UrlEncoderDecoder)
             .icon(icon::from_name("link-symbolic"));
 
+        nav.insert()
+            .text(fl!("jwt-debugger"))
+            .data::<Page>(Page::JwtDebugger)
+            .icon(
+                icon::from_svg_bytes(include_bytes!("../resources/jwt-symbolic.svg"))
+                    .symbolic(true)
+                    .icon(),
+            );
+
         let mut utility_pages = HashMap::<Page, Box<dyn UtilityPage>>::new();
         utility_pages.insert(
             Page::UnixTimeConverter,
@@ -110,6 +122,7 @@ impl cosmic::Application for AppModel {
             Page::UrlEncoderDecoder,
             Box::new(UrlEncoderDecoderPage::default()),
         );
+        utility_pages.insert(Page::JwtDebugger, Box::new(JwtDebuggerPage::default()));
 
         // Construct the app model with the runtime's core.
         let mut app = AppModel {
@@ -141,17 +154,24 @@ impl cosmic::Application for AppModel {
 
     /// Elements to pack at the start of the header bar.
     fn header_start(&self) -> Vec<Element<'_, Self::Message>> {
-        let menu_bar = menu::bar(vec![menu::Tree::with_children(
-            menu::root(fl!("view")).apply(Element::from),
-            menu::items(
+        let menu_bar = responsive_menu_bar()
+            .item_height(menu::ItemHeight::Dynamic(40))
+            .item_width(menu::ItemWidth::Uniform(320))
+            .spacing(4.0)
+            .into_element(
+                &self.core,
                 &self.key_binds,
-                vec![menu::Item::Button(
-                    format!("{} {}", fl!("about"), fl!("app-title")),
-                    None,
-                    MenuAction::About,
+                MENU_ID.clone(),
+                Message::Surface,
+                vec![(
+                    fl!("view"),
+                    vec![menu::Item::Button(
+                        format!("{} {}", fl!("about"), fl!("app-title")),
+                        None,
+                        MenuAction::About,
+                    )],
                 )],
-            ),
-        )]);
+            );
 
         vec![menu_bar.into()]
     }
@@ -276,6 +296,18 @@ impl cosmic::Application for AppModel {
                     .unwrap()
                     .handle_message(message);
             }
+            Message::JwtDebuggerMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::JwtDebugger)
+                    .unwrap()
+                    .handle_message(message);
+            }
+            Message::Surface(a) => {
+                return cosmic::task::message(cosmic::Action::Cosmic(
+                    cosmic::app::Action::Surface(a),
+                ));
+            }
         }
         Task::none()
     }
@@ -314,6 +346,15 @@ pub enum Page {
     DataConverterFormatter,
     Base64StringEncoderDecoder,
     UrlEncoderDecoder,
+    JwtDebugger,
+    // Key Creation/Conversion
+    // Hash Generator
+    // Lorem ipsum
+    // UUID generator
+    // Password creator
+    // Regex Tester
+    // URL Parser
+    // Colour Converter
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

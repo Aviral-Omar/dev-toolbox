@@ -7,14 +7,18 @@ pub(crate) mod context_drawer_pages;
 mod i18n;
 pub(crate) mod utility_pages;
 
-use crate::{
-    config::Config,
-    utility_pages::{
-        base64_string_encoder_decoder_page::Base64StringEncoderDecoderMessage,
-        data_converter_formatter_page::DataConverterFormatterMessage,
-        unix_time_converter_page::UnixTimeConverterMessage,
-        url_encoder_decoder_page::UrlEncoderDecoderMessage,
+use {
+    crate::{
+        config::Config,
+        utility_pages::{
+            base64_string_encoder_decoder_page::Base64StringEncoderDecoderMessage,
+            data_converter_formatter_page::DataConverterFormatterMessage,
+            jwt_debugger_page::JwtDebuggerMessage,
+            unix_time_converter_page::UnixTimeConverterMessage,
+            url_encoder_decoder_page::UrlEncoderDecoderMessage,
+        },
     },
+    cosmic::surface,
 };
 
 const REPOSITORY: &str = env!("CARGO_PKG_REPOSITORY");
@@ -37,6 +41,8 @@ pub enum Message {
     DataConverterFormatterMessage(DataConverterFormatterMessage),
     Base64StringEncoderDecoderMessage(Base64StringEncoderDecoderMessage),
     UrlEncoderDecoderMessage(UrlEncoderDecoderMessage),
+    JwtDebuggerMessage(JwtDebuggerMessage),
+    Surface(surface::Action),
 }
 
 fn main() -> cosmic::iced::Result {

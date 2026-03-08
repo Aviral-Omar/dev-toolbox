@@ -1,5 +1,8 @@
 use {
-    crate::{Message, app::AppModel, fl, i18n::LANGUAGE_LOADER, utility_pages::UtilityPage},
+    crate::{
+        Message, app::AppModel, class::text_input_style, fl, i18n::LANGUAGE_LOADER,
+        utility_pages::UtilityPage,
+    },
     chrono::{DateTime, Datelike, FixedOffset, Local},
     cosmic::{
         self, Application, Element, Task,
@@ -167,6 +170,7 @@ impl UtilityPage for UnixTimeConverterPage {
 
         let timestamp_input: TextInput<'_, Message> = widget::text_input("", &self.text)
             .id(Id::new(UNIX_TEXT_ID))
+            .style(text_input_style())
             .trailing_icon(
                 row![
                     widget::button::text(fl!("unix-time-converter", "now")).on_press(
@@ -200,6 +204,7 @@ impl UtilityPage for UnixTimeConverterPage {
 
         let iso_8601_text = widget::text_input::text_input("", &self.iso_8601_time)
             .id(Id::new(ISO_8601_TEXT_ID))
+            .style(text_input_style())
             .helper_text(fl!("unix-time-converter", "iso-8601-date"))
             .editing(false)
             .trailing_icon(clipboard_button(ISO_8601_TEXT_ID))
@@ -215,6 +220,7 @@ impl UtilityPage for UnixTimeConverterPage {
 
         let email_text = widget::text_input::text_input("", &self.email_time)
             .id(Id::new(EMAIL_TEXT_ID))
+            .style(text_input_style())
             .helper_text(fl!("unix-time-converter", "email-date"))
             .editing(false)
             .trailing_icon(clipboard_button(EMAIL_TEXT_ID))
@@ -230,6 +236,7 @@ impl UtilityPage for UnixTimeConverterPage {
 
         let dmy_text = widget::text_input::text_input("", &self.dmy_time)
             .id(Id::new(DMY_TEXT_ID))
+            .style(text_input_style())
             .helper_text("DD/MM/YYYY")
             .editing(false)
             .trailing_icon(clipboard_button(DMY_TEXT_ID))
@@ -245,6 +252,7 @@ impl UtilityPage for UnixTimeConverterPage {
 
         let hr_text = widget::text_input::text_input("", &self.hr_time)
             .id(Id::new(HR_TEXT_ID))
+            .style(text_input_style())
             .helper_text(fl!("unix-time-converter", "human-readable-time"))
             .editing(false)
             .trailing_icon(clipboard_button(HR_TEXT_ID))
