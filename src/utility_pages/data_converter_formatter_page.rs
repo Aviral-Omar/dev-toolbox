@@ -7,7 +7,7 @@ use {
             keyboard::{Key, key},
             widget::{column, row},
         },
-        iced_widget,
+        iced_core, iced_widget,
         widget::{
             self, Id,
             text_editor::{self, Binding, TextEditor},
@@ -91,6 +91,7 @@ impl UtilityPage for DataConverterFormatterPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
+            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::DataConverterFormatterMessage(
                     DataConverterFormatterMessage::InputEditorAction(action),
@@ -155,6 +156,7 @@ impl UtilityPage for DataConverterFormatterPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
+            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::DataConverterFormatterMessage(
                     DataConverterFormatterMessage::OutputEditorAction(action),
