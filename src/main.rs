@@ -14,6 +14,7 @@ use {
             base64_string_encoder_decoder_page::Base64StringEncoderDecoderMessage,
             data_converter_formatter_page::DataConverterFormatterMessage,
             jwt_debugger_page::JwtDebuggerMessage,
+            lorem_ipsum_generator_page::LoremIpsumGeneratorMessage,
             unix_time_converter_page::UnixTimeConverterMessage,
             url_encoder_decoder_page::UrlEncoderDecoderMessage,
         },
@@ -42,6 +43,7 @@ pub enum Message {
     Base64StringEncoderDecoderMessage(Base64StringEncoderDecoderMessage),
     UrlEncoderDecoderMessage(UrlEncoderDecoderMessage),
     JwtDebuggerMessage(JwtDebuggerMessage),
+    LoremIpsumGeneratorMessage(LoremIpsumGeneratorMessage),
     Surface(surface::Action),
 }
 

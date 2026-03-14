@@ -9,7 +9,9 @@ use {
         utility_pages::{
             UtilityPage, base64_string_encoder_decoder_page::Base64StringEncoderDecoderPage,
             data_converter_formatter_page::DataConverterFormatterPage,
-            jwt_debugger_page::JwtDebuggerPage, unix_time_converter_page::UnixTimeConverterPage,
+            jwt_debugger_page::JwtDebuggerPage,
+            lorem_ipsum_generator_page::LoremIpsumGeneratorPage,
+            unix_time_converter_page::UnixTimeConverterPage,
             url_encoder_decoder_page::UrlEncoderDecoderPage,
         },
     },
@@ -105,6 +107,15 @@ impl cosmic::Application for AppModel {
                     .icon(),
             );
 
+        nav.insert()
+            .text(fl!("lorem-ipsum-generator"))
+            .data::<Page>(Page::LoremIpsumGenerator)
+            .icon(
+                icon::from_svg_bytes(include_bytes!("../resources/lorem-ipsum.svg"))
+                    .symbolic(true)
+                    .icon(),
+            );
+
         let mut utility_pages = HashMap::<Page, Box<dyn UtilityPage>>::new();
         utility_pages.insert(
             Page::UnixTimeConverter,
@@ -123,6 +134,10 @@ impl cosmic::Application for AppModel {
             Box::new(UrlEncoderDecoderPage::default()),
         );
         utility_pages.insert(Page::JwtDebugger, Box::new(JwtDebuggerPage::default()));
+        utility_pages.insert(
+            Page::LoremIpsumGenerator,
+            Box::new(LoremIpsumGeneratorPage::default()),
+        );
 
         // Construct the app model with the runtime's core.
         let mut app = AppModel {
@@ -303,6 +318,13 @@ impl cosmic::Application for AppModel {
                     .unwrap()
                     .handle_message(message);
             }
+            Message::LoremIpsumGeneratorMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::LoremIpsumGenerator)
+                    .unwrap()
+                    .handle_message(message);
+            }
             Message::Surface(a) => {
                 return cosmic::task::message(cosmic::Action::Cosmic(
                     cosmic::app::Action::Surface(a),
@@ -347,9 +369,9 @@ pub enum Page {
     Base64StringEncoderDecoder,
     UrlEncoderDecoder,
     JwtDebugger,
+    LoremIpsumGenerator,
     // Key Creation/Conversion
     // Hash Generator
-    // Lorem ipsum
     // UUID generator
     // Password creator
     // Regex Tester
