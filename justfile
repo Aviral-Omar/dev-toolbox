@@ -1,4 +1,4 @@
-name := `grep -m 1 -oP '(?<=<binary>).*?(?=</binary>)' $(ls ./resources/*.xml | head -n 1)`
+name := `grep -m 1 -oP '(?<=<id>).*\.\K.*?(?=</id>)' $(ls ./resources/*.xml | head -n 1)`
 architecture := if arch() == "x86_64" { "amd64" } else { arch() }
 version := `sed -En 's/version[[:space:]]*=[[:space:]]*"([^"]+)"/\1/p' Cargo.toml | head -1`
 
