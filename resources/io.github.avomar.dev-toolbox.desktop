@@ -7,5 +7,5 @@ Comment=Everyday utilities for developers
 Icon=io.github.avomar.dev-toolbox
 Terminal=false
 StartupNotify=true
-Categories=COSMIC;Iced;
-Keywords=COSMIC
+Categories=COSMIC;Development;Utility
+Keywords=COSMIC;Development;Tool;Utility
