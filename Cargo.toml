@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 license = "GPL-3.0"
 description = "Everyday utilities for developers"
-repository = "https://github.com/Aviral-Omar/dev-toolbox.git"
+repository = "https://github.com/avomar/dev-toolbox.git"
 
 [dependencies]
 base64 = "0.22.1"

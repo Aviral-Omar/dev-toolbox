@@ -7,8 +7,9 @@
   "command": "dev-toolbox",
   "finish-args": [
     "--socket=wayland",
+    "--socket=fallback-x11",
+    "--share=ipc",
     "--device=dri",
-    "--filesystem=xdg-config/cosmic:ro",
     "--talk-name=com.system76.CosmicSettingsDaemon"
   ],
   "build-options": {

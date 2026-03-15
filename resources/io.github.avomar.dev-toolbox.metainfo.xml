@@ -29,13 +29,13 @@
   </developer>
   <developer_name>Aviral Omar</developer_name>
   <update_contact>aviralomar0301@gmail.com</update_contact>
-  <url type="homepage">https://github.com/Aviral-Omar/dev-toolbox</url>
-  <url type="bugtracker">https://github.com/Aviral-Omar/dev-toolbox/issues</url>
-  <url type="contribute">https://github.com/Aviral-Omar/dev-toolbox</url>
+  <url type="homepage">https://github.com/avomar/dev-toolbox</url>
+  <url type="bugtracker">https://github.com/avomar/dev-toolbox/issues</url>
+  <url type="contribute">https://github.com/avomar/dev-toolbox</url>
   <url
         type="translate"
-    >https://github.com/Aviral-Omar/dev-toolbox/tree/main/i18n</url>
-  <url type="vcs-browser">https://github.com/Aviral-Omar/dev-toolbox</url>
+    >https://github.com/avomar/dev-toolbox/tree/main/i18n</url>
+  <url type="vcs-browser">https://github.com/avomar/dev-toolbox</url>
   <launchable
         type="desktop-id"
     >io.github.avomar.dev-toolbox.desktop</launchable>
@@ -68,32 +68,32 @@
   <screenshots>
     <screenshot type="default">
       <image
-            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/unix-timestamp.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/unix-timestamp.png</image>
       <caption>UNIX Timestamp Converter Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/data-converter.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/data-converter.png</image>
       <caption>Data Converter/Formatter Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/base64.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/base64.png</image>
       <caption>Base64 Encoder/Decoder Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/url-decoder.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/url-decoder.png</image>
       <caption>URL Encoder/Decoder Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/jwt-debugger.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/jwt-debugger.png</image>
       <caption>JWT Debugger Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/lorem-ipsum.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/lorem-ipsum.png</image>
       <caption>Lorem ipsum Generator Page</caption>
     </screenshot>
   </screenshots>
