@@ -1,29 +1,49 @@
-# Name of the application's binary.
-name := 'dev-toolbox'
-# The unique ID of the application.
-appid := 'io.github.avomar.dev-toolbox'
+name := `grep -m 1 -oP '(?<=<binary>).*?(?=</binary>)' $(ls ./resources/*.xml | head -n 1)`
+architecture := if arch() == "x86_64" { "amd64" } else { arch() }
+version := `sed -En 's/version[[:space:]]*=[[:space:]]*"([^"]+)"/\1/p' Cargo.toml | head -1`
 
-# Path to root file system, which defaults to `/`.
+debname := name+'_'+version+'_'+architecture
+debdir := debname / 'DEBIAN'
+debcontrol := debdir / 'control'
+
+rpmarch := arch()
+rpmname := name + '-' + version + '-1.' + rpmarch
+rpmdir := rpmname / 'BUILDROOT'
+rpminstall := rpmdir / prefix
+rpm_bin_dst := rpminstall / 'bin' / name
+rpm_desktop_dst := rpminstall / 'share' / 'applications' / desktop
+rpm_metainfo_dst := rpminstall / 'share' / 'metainfo' / appdata
+rpm_icons_dst := rpminstall / 'share' / 'icons' / 'hicolor' / 'scalable' / 'apps'
+
+appid := `grep -m 1 -oP '(?<=<id>).*?(?=</id>)' $(ls ./resources/*.xml | head -n 1)`
+summary := `grep -m 1 -oP '(?<=<summary>).*?(?=</summary>)' $(ls ./resources/*.xml | head -n 1)`
+dev_name := `grep -m 1 -zoP '(?s)<developer.*?>\s*<name>\K.*?(?=</name>)' $(ls ./resources/*.xml | head -n 1)`
+email := `grep -m 1 -oP '(?<=<update_contact>).*?(?=</update_contact>)' $(ls ./resources/*.xml | head -n 1)`
+
 rootdir := ''
-# The prefix for the `/usr` directory.
 prefix := '/usr'
-# The location of the cargo target directory.
-cargo-target-dir := env('CARGO_TARGET_DIR', 'target')
-
-# Application's appstream metadata
-appdata := appid + '.metainfo.xml'
-# Application's desktop entry
-desktop := appid + '.desktop'
-# Application's icon.
-icon-svg := appid + '.svg'
+flatpak-prefix := '/app'
 
 # Install destinations
 base-dir := absolute_path(clean(rootdir / prefix))
-appdata-dst := base-dir / 'share' / 'appdata' / appdata
+flatpak-base-dir := absolute_path(clean(rootdir / flatpak-prefix))
+
+bin-src := 'target' / 'release' / name
 bin-dst := base-dir / 'bin' / name
+flatpak-bin-dst := flatpak-base-dir / 'bin' / name
+
+appdata := appid + '.metainfo.xml'
+appdata-src := 'resources' / appdata
+appdata-dst := base-dir / 'share' / 'appdata' / appdata
+
+desktop := appid + '.desktop'
+desktop-src := 'resources' / desktop
 desktop-dst := base-dir / 'share' / 'applications' / desktop
-icons-dst := base-dir / 'share' / 'icons' / 'hicolor'
-icon-svg-dst := icons-dst / 'scalable' / 'apps'
+flatpak-desktop-dst := flatpak-base-dir / 'share' / 'applications' / desktop
+
+icon-svg := appid + '.svg'
+icons-src := 'resources' / 'icons' / 'hicolor' / 'scalable'
+icons-dst := base-dir / 'share' / 'icons' / 'hicolor' / 'scalable'
 
 # Default recipe which runs `just build-release`
 default: build-release
@@ -62,14 +82,20 @@ run *args:
 
 # Installs files
 install:
-    install -Dm0755 {{ cargo-target-dir / 'release' / name }} {{bin-dst}}
-    install -Dm0644 {{ 'resources' / desktop }} {{desktop-dst}}
-    install -Dm0644 {{ 'resources' / appdata }} {{appdata-dst}}
-    install -Dm0644 {{ 'resources' / 'icons' / 'hicolor' / 'scalable' / 'apps' / 'icon.svg' }} {{icon-svg-dst}}
+    strip {{bin-src}}
+    install -Dm0755 {{ bin-src }} {{bin-dst}}
+    install -Dm0644 {{ desktop-src }} {{desktop-dst}}
+    install -Dm0644 {{ appdata-src }} {{appdata-dst}}
+    for svg in {{icons-src}}/apps/*.svg; do \
+        install -D "$svg" "{{icons-dst}}/apps/$(basename $svg)"; \
+    done
 
 # Uninstalls installed files
 uninstall:
-    rm {{bin-dst}} {{desktop-dst}} {{icon-svg-dst}}
+    rm {{bin-dst}} {{desktop-dst}} {{appdata-dst}}
+    for svg in {{icons-src}}/apps/*.svg; do \
+        rm "{{icons-dst}}/apps/$(basename $svg)"; \
+    done
 
 # Vendor dependencies locally
 vendor:
@@ -93,3 +119,96 @@ tag version:
     git commit -m 'release: {{version}}'
     git commit --amend
     git tag -a {{version}} -m ''
+
+deb:
+    #!/usr/bin/env bash
+    strip {{bin-src}}
+    install -D {{bin-src}} {{debname}}{{bin-dst}}
+    install -D {{desktop-src}} {{debname}}{{desktop-dst}}
+    for svg in {{icons-src}}/apps/*.svg; do \
+        install -D "$svg" "{{debname}}{{icons-dst}}/apps/$(basename $svg)"; \
+    done
+    mkdir -p {{debdir}}
+    echo "Package: {{name}}" > {{debcontrol}}
+    echo "Version: {{version}}" >> {{debcontrol}}
+    echo "Architecture: {{architecture}}" >> {{debcontrol}}
+    echo "Maintainer: {{dev_name}} <{{email}}>" >> {{debcontrol}}
+    echo "Description: {{summary}}" >> {{debcontrol}}
+    dpkg-deb --build --root-owner-group {{debname}}
+    rm -Rf {{debname}}/
+
+rpm:
+    #!/usr/bin/env bash
+    strip {{bin-src}}
+    install -D {{bin-src}} {{rpm_bin_dst}}
+    install -D {{desktop-src}} {{rpm_desktop_dst}}
+    install -D {{appdata-src}} {{rpm_metainfo_dst}}
+    for svg in {{icons-src}}/apps/*.svg; do \
+        install -D "$svg" "{{rpm_icons_dst}}/$(basename $svg)"; \
+    done
+    mkdir -p {{rpmname}}
+    echo "Name: {{name}}" > {{rpmname}}/spec.spec
+    echo "Version: {{version}}" >> {{rpmname}}/spec.spec
+    echo "Release: 1%{?dist}" >> {{rpmname}}/spec.spec
+    echo "Summary: {{summary}}" >> {{rpmname}}/spec.spec
+    echo "" >> {{rpmname}}/spec.spec
+    echo "License: GPLv3" >> {{rpmname}}/spec.spec
+    echo "Group: Applications/Utilities" >> {{rpmname}}/spec.spec
+    echo "%description" >> {{rpmname}}/spec.spec
+    echo "{{summary}}" >> {{rpmname}}/spec.spec
+    echo "" >> {{rpmname}}/spec.spec
+    echo "%files" >> {{rpmname}}/spec.spec
+    echo "%defattr(-,root,root,-)" >> {{rpmname}}/spec.spec
+    echo "{{prefix}}/bin/{{name}}" >> {{rpmname}}/spec.spec
+    echo "{{prefix}}/share/applications/{{desktop}}" >> {{rpmname}}/spec.spec
+    echo "{{prefix}}/share/metainfo/{{appdata}}" >> {{rpmname}}/spec.spec
+    echo "{{prefix}}/share/icons/hicolor/scalable/apps/*.svg" >> {{rpmname}}/spec.spec
+
+    rpmbuild -bb --buildroot="$(pwd)/{{rpmdir}}" {{rpmname}}/spec.spec \
+        --define "_rpmdir $(pwd)" \
+        --define "_topdir $(pwd)/{{rpmname}}" \
+        --define "_buildrootdir $(pwd)/{{rpmdir}}"
+
+    rm -rf {{rpmname}} {{rpmdir}}
+    mv x86_64/* .
+    rmdir x86_64
+
+# Build and install flatpak locally
+flatpak-install:
+    #!/usr/bin/env bash
+    set -e
+    arch="$(flatpak --default-arch)"
+    set -x
+    flatpak-builder \
+        --arch="${arch}" \
+        --ccache \
+        --force-clean \
+        --install \
+        --install-deps-from=flathub \
+        --repo=repo \
+        --user \
+        "flatpak-out/${arch}" \
+        {{appid}}.json
+
+# Build flatpak locally
+flatpak-build:
+    #!/usr/bin/env bash
+    set -e
+    arch="$(flatpak --default-arch)"
+    set -x
+    flatpak-builder \
+        --arch="${arch}" \
+        --ccache \
+        --force-clean \
+        --install-deps-from=flathub \
+        --repo=repo \
+        --sandbox \
+        --user \
+        --verbose \
+        "flatpak-out/${arch}" \
+        "{{appid}}.json" \
+        2>&1 | tee "log/${arch}.txt"
+
+# Update flatpak cargo-sources.json
+flatpak-cargo-sources:
+    python3 ./flatpak/flatpak-cargo-generator.py ./Cargo.lock -o ./flatpak/cargo-sources.json

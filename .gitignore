@@ -12,3 +12,12 @@ debian/*
 !debian/install
 !debian/rules
 !debian/source
+*.deb
+*.rpm
+.venv/
+# Flatpak-related
+/flatpak-builder-tools
+/.flatpak-builder
+/repo
+/flatpak-out
+cargo-sources.json

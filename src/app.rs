@@ -102,7 +102,7 @@ impl cosmic::Application for AppModel {
             .text(fl!("jwt-debugger"))
             .data::<Page>(Page::JwtDebugger)
             .icon(
-                icon::from_svg_bytes(include_bytes!("../resources/jwt-symbolic.svg"))
+                icon::from_svg_bytes(include_bytes!("../resources/icons/jwt-symbolic.svg"))
                     .symbolic(true)
                     .icon(),
             );
@@ -111,7 +111,7 @@ impl cosmic::Application for AppModel {
             .text(fl!("lorem-ipsum-generator"))
             .data::<Page>(Page::LoremIpsumGenerator)
             .icon(
-                icon::from_svg_bytes(include_bytes!("../resources/lorem-ipsum.svg"))
+                icon::from_svg_bytes(include_bytes!("../resources/icons/lorem-ipsum.svg"))
                     .symbolic(true)
                     .icon(),
             );
@@ -377,6 +377,8 @@ pub enum Page {
     // Regex Tester
     // URL Parser
     // Colour Converter
+    // CRON Parser
+    // CRON Generator
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

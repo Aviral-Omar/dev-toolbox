@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<component type="desktop-application">
+  <id>io.github.avomar.dev-toolbox</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>Dev Toolbox</name>
+  <summary>Utilities for developers</summary>
+  <description>
+    <p
+        >A collection of tools and utilities for developers. Following tools are currently available:</p>
+    <ul>
+      <li>UNIX Time Converter</li>
+      <li>Data Converter/Formatter</li>
+      <li>Base64 Encoder/Decoder</li>
+      <li>URL Encoder/Decoder</li>
+      <li>JWT Debugger</li>
+      <li>Lorem ipsum Generator</li>
+    </ul>
+  </description>
+  <icon type="stock">
+    io.github.avomar.dev-toolbox.svg
+  </icon>
+  <branding>
+    <color type="primary" scheme_preference="light">#99c1f1</color>
+    <color type="primary" scheme_preference="dark">#1a5fb4</color>
+  </branding>
+  <developer id="@aviralomar@fosstodon.org">
+    <name>Aviral Omar</name>
+  </developer>
+  <developer_name>Aviral Omar</developer_name>
+  <update_contact>aviralomar0301@gmail.com</update_contact>
+  <url type="homepage">https://github.com/Aviral-Omar/dev-toolbox</url>
+  <url type="bugtracker">https://github.com/Aviral-Omar/dev-toolbox/issues</url>
+  <url type="contribute">https://github.com/Aviral-Omar/dev-toolbox</url>
+  <url
+        type="translate"
+    >https://github.com/Aviral-Omar/dev-toolbox/tree/main/i18n</url>
+  <url type="vcs-browser">https://github.com/Aviral-Omar/dev-toolbox</url>
+  <launchable
+        type="desktop-id"
+    >io.github.avomar.dev-toolbox.desktop</launchable>
+  <provides>
+    <id>io.github.avomar.dev-toolbox</id>
+    <binaries>
+      <binary>dev-toolbox</binary>
+    </binaries>
+  </provides>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <supports>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </supports>
+  <categories>
+    <category>COSMIC</category>
+    <category>Utility</category>
+    <category>Development</category>
+  </categories>
+  <keywords>
+    <keyword>COSMIC</keyword>
+    <keyword>Development</keyword>
+    <keyword>Tool</keyword>
+    <keyword>Utility</keyword>
+  </keywords>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="1.0.0" date="2025-12-30">
+      <description>
+        <p>Release description</p>
+        <ul>
+          <li>Initial release</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+</component>
