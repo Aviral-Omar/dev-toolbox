@@ -65,6 +65,38 @@
     <keyword>Utility</keyword>
   </keywords>
   <content_rating type="oars-1.1" />
+  <screenshots>
+    <screenshot type="default">
+      <image
+            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/unix-timestamp.png</image>
+      <caption>UNIX Timestamp Converter Page</caption>
+    </screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/data-converter.png</image>
+      <caption>Data Converter/Formatter Page</caption>
+    </screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/base64.png</image>
+      <caption>Base64 Encoder/Decoder Page</caption>
+    </screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/url-decoder.png</image>
+      <caption>URL Encoder/Decoder Page</caption>
+    </screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/jwt-debugger.png</image>
+      <caption>JWT Debugger Page</caption>
+    </screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/Aviral-Omar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/lorem-ipsum.png</image>
+      <caption>Lorem ipsum Generator Page</caption>
+    </screenshot>
+  </screenshots>
   <releases>
     <release version="1.0.0" date="2025-12-30">
       <description>
