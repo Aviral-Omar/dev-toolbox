@@ -1,4 +1,4 @@
-# Dev Toolbox
+# OmniDev
 
 Everyday utilities for developers
 

@@ -13,6 +13,7 @@ use {
         utility_pages::{
             base64_string_encoder_decoder_page::Base64StringEncoderDecoderMessage,
             data_converter_formatter_page::DataConverterFormatterMessage,
+            gzip_compressor_decompressor_page::GZipCompressorDecompressorMessage,
             jwt_debugger_page::JwtDebuggerMessage,
             lorem_ipsum_generator_page::LoremIpsumGeneratorMessage,
             unix_time_converter_page::UnixTimeConverterMessage,
@@ -42,6 +43,7 @@ pub enum Message {
     UnixTimeConverterMessage(UnixTimeConverterMessage),
     DataConverterFormatterMessage(DataConverterFormatterMessage),
     Base64StringEncoderDecoderMessage(Base64StringEncoderDecoderMessage),
+    GZipCompressorDecompressorMessage(GZipCompressorDecompressorMessage),
     UrlEncoderDecoderMessage(UrlEncoderDecoderMessage),
     JwtDebuggerMessage(JwtDebuggerMessage),
     LoremIpsumGeneratorMessage(LoremIpsumGeneratorMessage),

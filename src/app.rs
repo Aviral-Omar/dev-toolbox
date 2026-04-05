@@ -9,6 +9,7 @@ use {
         utility_pages::{
             UtilityPage, base64_string_encoder_decoder_page::Base64StringEncoderDecoderPage,
             data_converter_formatter_page::DataConverterFormatterPage,
+            gzip_compressor_decompressor_page::GZipCompressorDecompressorPage,
             jwt_debugger_page::JwtDebuggerPage,
             lorem_ipsum_generator_page::LoremIpsumGeneratorPage,
             unix_time_converter_page::UnixTimeConverterPage,
@@ -94,6 +95,11 @@ impl cosmic::Application for AppModel {
             .icon(icon::from_name("object-flip-horizontal-symbolic"));
 
         nav.insert()
+            .text(fl!("gzip-compressor-decompressor"))
+            .data::<Page>(Page::GZipCompressorDecompressor)
+            .icon(icon::from_name("media-zip-symbolic"));
+
+        nav.insert()
             .text(fl!("url-encoder-decoder"))
             .data::<Page>(Page::UrlEncoderDecoder)
             .icon(icon::from_name("link-symbolic"));
@@ -128,6 +134,10 @@ impl cosmic::Application for AppModel {
         utility_pages.insert(
             Page::Base64StringEncoderDecoder,
             Box::new(Base64StringEncoderDecoderPage::default()),
+        );
+        utility_pages.insert(
+            Page::GZipCompressorDecompressor,
+            Box::new(GZipCompressorDecompressorPage::default()),
         );
         utility_pages.insert(
             Page::UrlEncoderDecoder,
@@ -304,6 +314,13 @@ impl cosmic::Application for AppModel {
                     .unwrap()
                     .handle_message(message);
             }
+            Message::GZipCompressorDecompressorMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::GZipCompressorDecompressor)
+                    .unwrap()
+                    .handle_message(message);
+            }
             Message::UrlEncoderDecoderMessage(_) => {
                 return self
                     .utility_pages
@@ -367,6 +384,7 @@ pub enum Page {
     UnixTimeConverter,
     DataConverterFormatter,
     Base64StringEncoderDecoder,
+    GZipCompressorDecompressor,
     UrlEncoderDecoder,
     JwtDebugger,
     LoremIpsumGenerator,

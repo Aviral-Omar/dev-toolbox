@@ -10,7 +10,8 @@
     "--socket=fallback-x11",
     "--share=ipc",
     "--device=dri",
-    "--talk-name=com.system76.CosmicSettingsDaemon"
+    "--talk-name=com.system76.CosmicSettingsDaemon",
+    "--talk-name=com.system76.CosmicSettingsDaemon.*"
   ],
   "build-options": {
     "append-path": "/usr/lib/sdk/rust-stable/bin",

@@ -107,7 +107,7 @@ impl UtilityPage for DataConverterFormatterPage {
             })
             .into();
 
-        let output_header: Element<'_, Message> = widget::row()
+        let output_header: Element<'_, Message> = widget::row([])
             .push(
                 widget::text::title4(fl!("output"))
                     .width(Length::Fill)
