@@ -42,3 +42,10 @@ Developers should install [rustup][rustup] and configure their editor to use [ru
 [rust-analyzer]: https://rust-analyzer.github.io/
 [mold]: https://github.com/rui314/mold
 [sccache]: https://github.com/mozilla/sccache
+
+## Flatpak
+
+```sh
+flatpak run --command=flathub-build org.flatpak.Builder --install io.github.avomar.dev-toolbox.json  # build and install
+flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest io.github.avomar.dev-toolbox.json  # lint
+```
