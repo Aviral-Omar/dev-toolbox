@@ -1,13 +1,12 @@
 use {
     crate::{Message, app::AppModel, class::text_editor_class, fl, utility_pages::UtilityPage},
     cosmic::{
-        self, Application, Element, Task,
+        self, Application, Element, Task, iced,
         iced::{
             Alignment, Length, Padding, clipboard,
             keyboard::{Key, key},
             widget::{column, row},
         },
-        iced_core, iced_widget,
         widget::{
             self, Id,
             text_editor::{self, Binding, TextEditor},
@@ -80,7 +79,7 @@ impl UtilityPage for DataConverterFormatterPage {
                     )
                 ),
                 widget::text(fl!("paste")),
-                iced_widget::tooltip::Position::Bottom,
+                widget::tooltip::Position::Bottom,
             ),
         ]
         .into();
@@ -91,7 +90,7 @@ impl UtilityPage for DataConverterFormatterPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
-            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
+            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::DataConverterFormatterMessage(
                     DataConverterFormatterMessage::InputEditorAction(action),
@@ -146,7 +145,7 @@ impl UtilityPage for DataConverterFormatterPage {
                     ),
                 ),
                 widget::text(fl!("copy")),
-                iced_widget::tooltip::Position::Bottom,
+                widget::tooltip::Position::Bottom,
             ))
             .into();
 
@@ -156,7 +155,7 @@ impl UtilityPage for DataConverterFormatterPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
-            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
+            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::DataConverterFormatterMessage(
                     DataConverterFormatterMessage::OutputEditorAction(action),

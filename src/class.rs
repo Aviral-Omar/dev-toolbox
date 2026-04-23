@@ -1,9 +1,9 @@
-use cosmic::{iced_core::Color, prelude::ColorExt, widget::text_input::Appearance};
+use cosmic::{iced::core::Color, prelude::ColorExt, widget::text_input::Appearance};
 
 pub(crate) fn text_editor_class(
     theme: &cosmic::Theme,
     status: cosmic::widget::text_editor::Status,
-) -> cosmic::iced_widget::text_editor::Style {
+) -> cosmic::widget::text_editor::Style {
     let cosmic = theme.cosmic();
     let container = theme.current_container();
 
@@ -16,23 +16,21 @@ pub(crate) fn text_editor_class(
     let placeholder = placeholder.into();
 
     match status {
-        cosmic::iced_widget::text_editor::Status::Active
-        | cosmic::iced_widget::text_editor::Status::Disabled => {
-            cosmic::iced_widget::text_editor::Style {
-                background: background.into(),
-                border: cosmic::iced::Border {
-                    radius: cosmic.corner_radii.radius_s.into(),
-                    width: 1.0,
-                    color: container.component.divider.into(),
-                },
-                placeholder,
-                value,
-                selection,
-            }
-        }
-        cosmic::iced_widget::text_editor::Status::Hovered
-        | cosmic::iced_widget::text_editor::Status::Focused { .. } => {
-            cosmic::iced_widget::text_editor::Style {
+        cosmic::widget::text_editor::Status::Active
+        | cosmic::widget::text_editor::Status::Disabled => cosmic::widget::text_editor::Style {
+            background: background.into(),
+            border: cosmic::iced::Border {
+                radius: cosmic.corner_radii.radius_s.into(),
+                width: 1.0,
+                color: container.component.divider.into(),
+            },
+            placeholder,
+            value,
+            selection,
+        },
+        cosmic::widget::text_editor::Status::Hovered
+        | cosmic::widget::text_editor::Status::Focused { .. } => {
+            cosmic::widget::text_editor::Style {
                 background: background.into(),
                 border: cosmic::iced::Border {
                     radius: cosmic.corner_radii.radius_s.into(),

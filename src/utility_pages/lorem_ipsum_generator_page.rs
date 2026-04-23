@@ -8,12 +8,11 @@ use {
         utility_pages::UtilityPage,
     },
     cosmic::{
-        self, Application, Element, Task,
+        self, Application, Element, Task, iced,
         iced::{
             Alignment, Length, Padding, clipboard,
             widget::{column, row},
         },
-        iced_core, iced_widget,
         widget::{
             self, Id,
             text_editor::{self, TextEditor},
@@ -104,7 +103,7 @@ impl UtilityPage for LoremIpsumGeneratorPage {
                     ),),
                 ),
                 widget::text(fl!("copy")),
-                iced_widget::tooltip::Position::Bottom,
+                widget::tooltip::Position::Bottom,
             )
         ]
         .align_y(Alignment::Center)
@@ -116,7 +115,7 @@ impl UtilityPage for LoremIpsumGeneratorPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
-            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
+            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::LoremIpsumGeneratorMessage(LoremIpsumGeneratorMessage::OutputEditorAction(
                     action,

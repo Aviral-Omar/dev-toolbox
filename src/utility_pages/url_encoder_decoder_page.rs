@@ -6,11 +6,10 @@ use {
     cosmic::{
         self, Application, Element, Task,
         iced::{
-            Alignment, Length, Padding, clipboard,
+            self, Alignment, Length, Padding, clipboard,
             keyboard::{Key, key},
             widget::{column, row},
         },
-        iced_core, iced_widget,
         widget::{
             self, Id,
             text_editor::{self, Binding, TextEditor},
@@ -86,7 +85,7 @@ impl UtilityPage for UrlEncoderDecoderPage {
                     ),)
                 ),
                 widget::text(fl!("paste")),
-                iced_widget::tooltip::Position::Bottom,
+                widget::tooltip::Position::Bottom,
             ),
         ]
         .into();
@@ -97,7 +96,7 @@ impl UtilityPage for UrlEncoderDecoderPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
-            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
+            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::InputEditorAction(
                     action,
@@ -124,7 +123,7 @@ impl UtilityPage for UrlEncoderDecoderPage {
                     )),),
                 ),
                 widget::text(fl!("copy")),
-                iced_widget::tooltip::Position::Bottom,
+                widget::tooltip::Position::Bottom,
             )
         ]
         .align_y(Alignment::Center)
@@ -136,7 +135,7 @@ impl UtilityPage for UrlEncoderDecoderPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
-            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
+            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::OutputEditorAction(
                     action,

@@ -5,13 +5,12 @@ use {
     },
     base64::Engine,
     cosmic::{
-        self, Application, Element, Task,
+        self, Application, Element, Task, iced,
         iced::{
             Alignment, Length, Padding, clipboard,
             keyboard::{Key, key},
             widget::{column, row},
         },
-        iced_core, iced_widget,
         widget::{
             self, Id,
             text_editor::{self, Binding, TextEditor},
@@ -83,7 +82,7 @@ impl UtilityPage for GZipCompressorDecompressorPage {
                     )
                 ),
                 widget::text(fl!("paste")),
-                iced_widget::tooltip::Position::Bottom,
+                widget::tooltip::Position::Bottom,
             ),
         ]
         .into();
@@ -94,7 +93,7 @@ impl UtilityPage for GZipCompressorDecompressorPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
-            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
+            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::GZipCompressorDecompressorMessage(
                     GZipCompressorDecompressorMessage::InputEditorAction(action),
@@ -121,7 +120,7 @@ impl UtilityPage for GZipCompressorDecompressorPage {
                     ),
                 ),
                 widget::text(fl!("copy")),
-                iced_widget::tooltip::Position::Bottom,
+                widget::tooltip::Position::Bottom,
             )
         ]
         .align_y(Alignment::Center)
@@ -133,7 +132,7 @@ impl UtilityPage for GZipCompressorDecompressorPage {
             .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
                 text_editor_class,
             )))
-            .wrapping(iced_core::text::Wrapping::WordOrGlyph)
+            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
             .on_action(|action| {
                 Message::GZipCompressorDecompressorMessage(
                     GZipCompressorDecompressorMessage::OutputEditorAction(action),

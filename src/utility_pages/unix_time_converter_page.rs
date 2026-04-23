@@ -10,7 +10,6 @@ use {
             Alignment, Length, clipboard,
             widget::{column, row},
         },
-        iced_widget,
         widget::{self, Id, TextInput, text_input},
     },
 };
@@ -120,7 +119,7 @@ fn clipboard_button(id: &str) -> Element<'_, Message> {
             ))),
         ),
         widget::text(fl!("copy")),
-        iced_widget::tooltip::Position::Bottom,
+        widget::tooltip::Position::Bottom,
     )
     .into()
 }

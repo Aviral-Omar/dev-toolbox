@@ -36,9 +36,9 @@ features = [
     # About widget for the app
     "about",
     # Uses cosmic-settings-daemon to watch for config file changes
-    # "dbus-config",
+    "dbus-config",
     # Support creating additional application windows.
-    # "multi-window",
+    "multi-window",
     # On app startup, focuses an existing instance if the app is already open
     "single-instance",
     # Uses tokio as the executor for the runtime
