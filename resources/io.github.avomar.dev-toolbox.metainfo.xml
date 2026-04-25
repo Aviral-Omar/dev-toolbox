@@ -12,6 +12,7 @@
       <li>UNIX Time Converter</li>
       <li>Data Converter/Formatter</li>
       <li>Base64 Encoder/Decoder</li>
+      <li>GZip Compressor/Decompressor</li>
       <li>URL Encoder/Decoder</li>
       <li>JWT Debugger</li>
       <li>Lorem ipsum Generator</li>
@@ -62,36 +63,52 @@
   <screenshots>
     <screenshot type="default">
       <image
-            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/unix-timestamp.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/unix-timestamp.png</image>
       <caption>UNIX Timestamp Converter Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/data-converter.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/data-converter.png</image>
       <caption>Data Converter/Formatter Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/base64.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/gzip.png</image>
+      <caption>GZip Compressor/Decompressor Page</caption>
+    </screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/base64.png</image>
       <caption>Base64 Encoder/Decoder Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/url-decoder.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/url-decoder.png</image>
       <caption>URL Encoder/Decoder Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/jwt-debugger.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/jwt-debugger.png</image>
       <caption>JWT Debugger Page</caption>
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/avomar/dev-toolbox/31fc0189c279b6de95291563267e8987da42e27d/resources/screenshots/lorem-ipsum.png</image>
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/lorem-ipsum.png</image>
       <caption>Lorem ipsum Generator Page</caption>
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.0.0" date="2026-04-24">
+        <description>
+        <p>Release description</p>
+        <ul>
+            <li>App name changed to OmniDev</li>
+            <li>App icon updated</li>
+            <li>Added GZip Compressor/Decompressor page</li>
+            <li>Fixed theming in flatpak</li>
+        </ul>
+        </description>
+    </release>
     <release version="1.0.0" date="2025-12-30">
       <description>
         <p>Release description</p>
