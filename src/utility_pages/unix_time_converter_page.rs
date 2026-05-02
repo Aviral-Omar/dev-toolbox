@@ -1,6 +1,11 @@
 use {
     crate::{
-        Message, app::AppModel, class::text_input_style, fl, i18n::LANGUAGE_LOADER,
+        Message,
+        app::AppModel,
+        class::text_input_style,
+        components::{self, page_header},
+        fl,
+        i18n::LANGUAGE_LOADER,
         utility_pages::UtilityPage,
     },
     chrono::{DateTime, Datelike, FixedOffset, Local},
@@ -111,16 +116,10 @@ fn find_current_timezone_position() -> usize {
     }
 }
 
-fn clipboard_button(id: &str) -> Element<'_, Message> {
-    widget::tooltip(
-        widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-            Message::UnixTimeConverterMessage(UnixTimeConverterMessage::CopyText(Id::new(
-                id.to_string(),
-            ))),
-        ),
-        widget::text(fl!("copy")),
-        widget::tooltip::Position::Bottom,
-    )
+fn copy_button(id: &str) -> Element<'_, Message> {
+    components::copy_button(Message::UnixTimeConverterMessage(
+        UnixTimeConverterMessage::CopyText(Id::new(id.to_string())),
+    ))
     .into()
 }
 
@@ -139,9 +138,8 @@ pub fn format_offset(offset: FixedOffset) -> String {
 impl UtilityPage for UnixTimeConverterPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
-        let header = row![widget::text::title2(fl!("unix-time-converter"))]
-            .align_y(Alignment::End)
-            .spacing(space_s);
+
+        let header = page_header(UnixTimeConverterPage::PAGE_NAME);
 
         let input_header: Element<'_, Message> = widget::text::title4(fl!("input"))
             .width(Length::Fill)
@@ -174,7 +172,7 @@ impl UtilityPage for UnixTimeConverterPage {
                     widget::button::text(fl!("unix-time-converter", "now")).on_press(
                         Message::UnixTimeConverterMessage(UnixTimeConverterMessage::SetCurrentTime)
                     ),
-                    clipboard_button(UNIX_TEXT_ID),
+                    copy_button(UNIX_TEXT_ID),
                 ]
                 .into(),
             )
@@ -205,7 +203,7 @@ impl UtilityPage for UnixTimeConverterPage {
             .style(text_input_style())
             .helper_text(fl!("unix-time-converter", "iso-8601-date"))
             .editing(false)
-            .trailing_icon(clipboard_button(ISO_8601_TEXT_ID))
+            .trailing_icon(copy_button(ISO_8601_TEXT_ID))
             .on_input(|_| {
                 Message::UnixTimeConverterMessage(UnixTimeConverterMessage::ReadOnlyInput(Id::new(
                     ISO_8601_TEXT_ID,
@@ -221,7 +219,7 @@ impl UtilityPage for UnixTimeConverterPage {
             .style(text_input_style())
             .helper_text(fl!("unix-time-converter", "email-date"))
             .editing(false)
-            .trailing_icon(clipboard_button(EMAIL_TEXT_ID))
+            .trailing_icon(copy_button(EMAIL_TEXT_ID))
             .on_input(|_| {
                 Message::UnixTimeConverterMessage(UnixTimeConverterMessage::ReadOnlyInput(Id::new(
                     EMAIL_TEXT_ID,
@@ -237,7 +235,7 @@ impl UtilityPage for UnixTimeConverterPage {
             .style(text_input_style())
             .helper_text("DD/MM/YYYY")
             .editing(false)
-            .trailing_icon(clipboard_button(DMY_TEXT_ID))
+            .trailing_icon(copy_button(DMY_TEXT_ID))
             .on_input(|_| {
                 Message::UnixTimeConverterMessage(UnixTimeConverterMessage::ReadOnlyInput(Id::new(
                     DMY_TEXT_ID,
@@ -253,7 +251,7 @@ impl UtilityPage for UnixTimeConverterPage {
             .style(text_input_style())
             .helper_text(fl!("unix-time-converter", "human-readable-time"))
             .editing(false)
-            .trailing_icon(clipboard_button(HR_TEXT_ID))
+            .trailing_icon(copy_button(HR_TEXT_ID))
             .on_input(|_| {
                 Message::UnixTimeConverterMessage(UnixTimeConverterMessage::ReadOnlyInput(Id::new(
                     HR_TEXT_ID,
@@ -355,6 +353,8 @@ impl UtilityPage for UnixTimeConverterPage {
 }
 
 impl UnixTimeConverterPage {
+    const PAGE_NAME: &str = "unix-time-converter";
+
     fn convert_unix_timestamp(&mut self) {
         let _ = self.text.parse::<i64>().inspect(|time| {
             match self.timestamp_type {

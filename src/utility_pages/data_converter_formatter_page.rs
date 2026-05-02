@@ -1,9 +1,16 @@
 use {
-    crate::{Message, app::AppModel, class::text_editor_class, fl, utility_pages::UtilityPage},
+    crate::{
+        Message,
+        app::AppModel,
+        class::text_editor_class,
+        components::{copy_button, page_header, paste_button},
+        fl,
+        utility_pages::UtilityPage,
+    },
     cosmic::{
-        self, Application, Element, Task, iced,
+        self, Application, Element, Task,
         iced::{
-            Alignment, Length, Padding, clipboard,
+            self, Alignment, Length, Padding, clipboard,
             keyboard::{Key, key},
             widget::{column, row},
         },
@@ -51,10 +58,7 @@ impl UtilityPage for DataConverterFormatterPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
 
-        let header = widget::row::with_capacity(2)
-            .push(widget::text::title2(fl!("data-converter-formatter")))
-            .align_y(Alignment::End)
-            .spacing(space_s);
+        let header = page_header(DataConverterFormatterPage::PAGE_NAME);
 
         let input_header: Element<'_, Message> = row![
             widget::text::title4(fl!("input"))
@@ -72,15 +76,9 @@ impl UtilityPage for DataConverterFormatterPage {
                     )
                 },
             ),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-paste-symbolic")).on_press(
-                    Message::DataConverterFormatterMessage(
-                        DataConverterFormatterMessage::PasteText(Id::new(INPUT_EDITOR_ID)),
-                    )
-                ),
-                widget::text(fl!("paste")),
-                widget::tooltip::Position::Bottom,
-            ),
+            paste_button(Message::DataConverterFormatterMessage(
+                DataConverterFormatterMessage::PasteText(Id::new(INPUT_EDITOR_ID))
+            )),
         ]
         .into();
 
@@ -138,15 +136,9 @@ impl UtilityPage for DataConverterFormatterPage {
                     )
                 },
             ))
-            .push(widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::DataConverterFormatterMessage(
-                        DataConverterFormatterMessage::CopyText(Id::new(OUTPUT_EDITOR_ID)),
-                    ),
-                ),
-                widget::text(fl!("copy")),
-                widget::tooltip::Position::Bottom,
-            ))
+            .push(copy_button(Message::DataConverterFormatterMessage(
+                DataConverterFormatterMessage::CopyText(Id::new(OUTPUT_EDITOR_ID)),
+            )))
             .into();
 
         let output_editor: Element<'_, Message> = TextEditor::new(&self.output_content)
@@ -250,6 +242,8 @@ impl UtilityPage for DataConverterFormatterPage {
 }
 
 impl DataConverterFormatterPage {
+    const PAGE_NAME: &str = "data-converter-formatter";
+
     fn convert_input(&mut self) {
         let input = self.input_content.text();
         let input_value: Option<serde_json::Value> = match self.input_format {

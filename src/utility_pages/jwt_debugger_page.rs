@@ -3,14 +3,15 @@ use {
         Message,
         app::AppModel,
         class::{text_editor_class, text_input_style},
+        components::{self, page_header, status_bar},
         fl,
         i18n::LANGUAGE_LOADER,
         utility_pages::UtilityPage,
     },
     cosmic::{
-        self, Application, Element, Task, iced,
+        self, Application, Element, Task,
         iced::{
-            Alignment, Length, Padding, clipboard,
+            self, Alignment, Length, Padding, clipboard,
             keyboard::{Key, key},
             widget::{column, row},
         },
@@ -87,6 +88,20 @@ impl Default for JwtDebuggerPage {
     }
 }
 
+fn copy_button(id: &str) -> Element<'_, Message> {
+    components::copy_button(Message::JwtDebuggerMessage(JwtDebuggerMessage::CopyText(
+        Id::new(id.to_string()),
+    )))
+    .into()
+}
+
+fn paste_button(id: &str) -> Element<'_, Message> {
+    components::paste_button(Message::JwtDebuggerMessage(JwtDebuggerMessage::PasteText(
+        Id::new(id.to_string()),
+    )))
+    .into()
+}
+
 fn algorithm_type(algorithm: Algorithm) -> AlgorithmType {
     match algorithm {
         Algorithm::HS256 | Algorithm::HS384 | Algorithm::HS512 => AlgorithmType::Symmetric,
@@ -105,10 +120,7 @@ impl UtilityPage for JwtDebuggerPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
 
-        let header = widget::row::with_capacity(2)
-            .push(widget::text::title2(fl!("jwt-debugger")))
-            .align_y(Alignment::End)
-            .spacing(space_s);
+        let header = page_header(JwtDebuggerPage::PAGE_NAME);
 
         let options_header: Element<'_, Message> = row![
             widget::text::title4(fl!("options"))
@@ -121,24 +133,8 @@ impl UtilityPage for JwtDebuggerPage {
             widget::text::title4(fl!("jwt-debugger", "token"))
                 .width(Length::Fill)
                 .align_x(Alignment::Start),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::JwtDebuggerMessage(JwtDebuggerMessage::CopyText(Id::new(
-                        TOKEN_EDITOR_ID
-                    )),),
-                ),
-                widget::text(fl!("copy")),
-                widget::tooltip::Position::Bottom,
-            ),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-paste-symbolic")).on_press(
-                    Message::JwtDebuggerMessage(JwtDebuggerMessage::PasteText(Id::new(
-                        TOKEN_EDITOR_ID
-                    )),)
-                ),
-                widget::text(fl!("paste")),
-                widget::tooltip::Position::Bottom,
-            ),
+            copy_button(TOKEN_EDITOR_ID),
+            paste_button(TOKEN_EDITOR_ID),
         ]
         .into();
 
@@ -167,24 +163,8 @@ impl UtilityPage for JwtDebuggerPage {
             widget::text::title4(fl!("jwt-debugger", "header"))
                 .width(Length::Fill)
                 .align_x(Alignment::Start),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::JwtDebuggerMessage(JwtDebuggerMessage::CopyText(Id::new(
-                        HEADER_EDITOR_ID
-                    )),),
-                ),
-                widget::text(fl!("copy")),
-                widget::tooltip::Position::Bottom,
-            ),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-paste-symbolic")).on_press(
-                    Message::JwtDebuggerMessage(JwtDebuggerMessage::PasteText(Id::new(
-                        HEADER_EDITOR_ID
-                    )),)
-                ),
-                widget::text(fl!("paste")),
-                widget::tooltip::Position::Bottom,
-            ),
+            copy_button(HEADER_EDITOR_ID),
+            paste_button(HEADER_EDITOR_ID),
         ]
         .align_y(Alignment::Center)
         .into();
@@ -213,24 +193,8 @@ impl UtilityPage for JwtDebuggerPage {
             widget::text::title4(fl!("jwt-debugger", "claims"))
                 .width(Length::Fill)
                 .align_x(Alignment::Start),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::JwtDebuggerMessage(JwtDebuggerMessage::CopyText(Id::new(
-                        CLAIMS_EDITOR_ID
-                    )),),
-                ),
-                widget::text(fl!("copy")),
-                widget::tooltip::Position::Bottom,
-            ),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-paste-symbolic")).on_press(
-                    Message::JwtDebuggerMessage(JwtDebuggerMessage::PasteText(Id::new(
-                        CLAIMS_EDITOR_ID
-                    )),)
-                ),
-                widget::text(fl!("paste")),
-                widget::tooltip::Position::Bottom,
-            ),
+            copy_button(CLAIMS_EDITOR_ID),
+            paste_button(CLAIMS_EDITOR_ID),
         ]
         .align_y(Alignment::Center)
         .into();
@@ -255,12 +219,7 @@ impl UtilityPage for JwtDebuggerPage {
             })
             .into();
 
-        let status_row: Element<'_, Message> = row![
-            widget::text::heading(fl!("status")),
-            widget::space().width(8),
-            widget::text::body(LANGUAGE_LOADER.get_attr("jwt-debugger", self.status.as_str())),
-        ]
-        .into();
+        let status_container = status_bar(&self.status.as_str(), JwtDebuggerPage::PAGE_NAME);
 
         let mut column = widget::column::with_capacity(10)
             .spacing(space_s)
@@ -287,46 +246,21 @@ impl UtilityPage for JwtDebuggerPage {
                 .id(Id::new(SYMMETRIC_KEY_TEXT_ID))
                 .style(text_input_style())
                 .helper_text(fl!("jwt-debugger", "symmetric-key"))
-                .trailing_icon(
-                    widget::tooltip(
-                        widget::button::icon(widget::icon::from_name("edit-paste-symbolic"))
-                            .on_press(Message::JwtDebuggerMessage(JwtDebuggerMessage::PasteText(
-                                Id::new(SYMMETRIC_KEY_TEXT_ID),
-                            ))),
-                        widget::text(fl!("paste")),
-                        widget::tooltip::Position::Bottom,
-                    )
-                    .into(),
-                )
+                .trailing_icon(paste_button(SYMMETRIC_KEY_TEXT_ID).into())
                 .on_input(|input| {
                     Message::JwtDebuggerMessage(JwtDebuggerMessage::SymmetricKeyChanged(input))
                 });
             column = column.push(key_encoding_option).push(symmetric_key_text);
         } else {
-            let public_key_header: Element<'_, Message> =
-                row![
-                    widget::text::heading(fl!("jwt-debugger", "public-key"))
-                        .width(Length::Fill)
-                        .align_x(Alignment::Start),
-                    widget::tooltip(
-                        widget::button::icon(widget::icon::from_name("edit-copy-symbolic"))
-                            .on_press(Message::JwtDebuggerMessage(JwtDebuggerMessage::CopyText(
-                                Id::new(PUBLIC_KEY_EDITOR_ID)
-                            ),),),
-                        widget::text(fl!("copy")),
-                        widget::tooltip::Position::Bottom,
-                    ),
-                    widget::tooltip(
-                        widget::button::icon(widget::icon::from_name("edit-paste-symbolic"))
-                            .on_press(Message::JwtDebuggerMessage(JwtDebuggerMessage::PasteText(
-                                Id::new(PUBLIC_KEY_EDITOR_ID)
-                            ),)),
-                        widget::text(fl!("paste")),
-                        widget::tooltip::Position::Bottom,
-                    ),
-                ]
-                .align_y(Alignment::Center)
-                .into();
+            let public_key_header: Element<'_, Message> = row![
+                widget::text::heading(fl!("jwt-debugger", "public-key"))
+                    .width(Length::Fill)
+                    .align_x(Alignment::Start),
+                copy_button(PUBLIC_KEY_EDITOR_ID),
+                paste_button(PUBLIC_KEY_EDITOR_ID),
+            ]
+            .align_y(Alignment::Center)
+            .into();
 
             let public_key_editor: Element<'_, Message> = TextEditor::new(&self.public_key_content)
                 .padding(Padding::new(12.0))
@@ -348,30 +282,15 @@ impl UtilityPage for JwtDebuggerPage {
                 })
                 .into();
 
-            let private_key_header: Element<'_, Message> =
-                row![
-                    widget::text::heading(fl!("jwt-debugger", "private-key"))
-                        .width(Length::Fill)
-                        .align_x(Alignment::Start),
-                    widget::tooltip(
-                        widget::button::icon(widget::icon::from_name("edit-copy-symbolic"))
-                            .on_press(Message::JwtDebuggerMessage(JwtDebuggerMessage::CopyText(
-                                Id::new(PRIVATE_KEY_EDITOR_ID)
-                            ),),),
-                        widget::text(fl!("copy")),
-                        widget::tooltip::Position::Bottom,
-                    ),
-                    widget::tooltip(
-                        widget::button::icon(widget::icon::from_name("edit-paste-symbolic"))
-                            .on_press(Message::JwtDebuggerMessage(JwtDebuggerMessage::PasteText(
-                                Id::new(PRIVATE_KEY_EDITOR_ID)
-                            ),)),
-                        widget::text(fl!("paste")),
-                        widget::tooltip::Position::Bottom,
-                    ),
-                ]
-                .align_y(Alignment::Center)
-                .into();
+            let private_key_header: Element<'_, Message> = row![
+                widget::text::heading(fl!("jwt-debugger", "private-key"))
+                    .width(Length::Fill)
+                    .align_x(Alignment::Start),
+                copy_button(PRIVATE_KEY_EDITOR_ID),
+                paste_button(PRIVATE_KEY_EDITOR_ID),
+            ]
+            .align_y(Alignment::Center)
+            .into();
 
             let private_key_editor: Element<'_, Message> =
                 TextEditor::new(&self.private_key_content)
@@ -417,11 +336,7 @@ impl UtilityPage for JwtDebuggerPage {
                 .height(Length::FillPortion(3))
                 .spacing(space_s),
             )
-            .push(
-                column![status_row]
-                    .width(Length::Fill)
-                    .align_x(Alignment::Center),
-            );
+            .push(status_container);
         column.into()
     }
 
@@ -532,6 +447,8 @@ impl UtilityPage for JwtDebuggerPage {
 }
 
 impl JwtDebuggerPage {
+    const PAGE_NAME: &str = "jwt-debugger";
+
     fn decode_token(&mut self) {
         self.last_operation = Operation::Decode;
         let input = self.token_content.text();

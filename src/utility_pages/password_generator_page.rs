@@ -1,5 +1,12 @@
 use {
-    crate::{Message, app::AppModel, class::text_input_style, fl, utility_pages::UtilityPage},
+    crate::{
+        Message,
+        app::AppModel,
+        class::text_input_style,
+        components::{copy_button, page_header},
+        fl,
+        utility_pages::UtilityPage,
+    },
     cosmic::{
         self, Application, Element, Task,
         iced::{
@@ -51,25 +58,11 @@ impl Default for PasswordGeneratorPage {
     }
 }
 
-fn clipboard_button(id: &str) -> Element<'_, Message> {
-    widget::tooltip(
-        widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-            Message::PasswordGeneratorMessage(PasswordGeneratorMessage::CopyText(Id::new(
-                id.to_string(),
-            ))),
-        ),
-        widget::text(fl!("copy")),
-        widget::tooltip::Position::Bottom,
-    )
-    .into()
-}
-
 impl UtilityPage for PasswordGeneratorPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
-        let header = row![widget::text::title2(fl!("password-generator"))]
-            .align_y(Alignment::End)
-            .spacing(space_s);
+
+        let header = page_header(PasswordGeneratorPage::PAGE_NAME);
 
         let options_header: Element<'_, Message> = widget::text::title4(fl!("options"))
             .width(Length::Fill)
@@ -136,7 +129,6 @@ impl UtilityPage for PasswordGeneratorPage {
         let password_output: TextInput<'_, Message> = widget::text_input("", &self.password_text)
             .id(Id::new(PASSWORD_TEXT_ID))
             .style(text_input_style())
-            .helper_text(fl!("password-generator", "password"))
             .editing(false)
             .trailing_icon(
                 row![
@@ -145,7 +137,9 @@ impl UtilityPage for PasswordGeneratorPage {
                             PasswordGeneratorMessage::GeneratePassword
                         )
                     ),
-                    clipboard_button(PASSWORD_TEXT_ID),
+                    copy_button(Message::PasswordGeneratorMessage(
+                        PasswordGeneratorMessage::CopyText(Id::new(PASSWORD_TEXT_ID))
+                    )),
                 ]
                 .into(),
             )
@@ -226,6 +220,8 @@ impl UtilityPage for PasswordGeneratorPage {
 }
 
 impl PasswordGeneratorPage {
+    const PAGE_NAME: &str = "password-generator";
+
     fn generate_password(&mut self) {
         let pg = PasswordGenerator {
             length: self.length,

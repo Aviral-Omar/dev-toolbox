@@ -3,14 +3,15 @@ use {
         Message,
         app::AppModel,
         class::{text_editor_class, text_input_style},
+        components::{copy_button, page_header},
         fl,
         i18n::LANGUAGE_LOADER,
         utility_pages::UtilityPage,
     },
     cosmic::{
-        self, Application, Element, Task, iced,
+        self, Application, Element, Task,
         iced::{
-            Alignment, Length, Padding, clipboard,
+            self, Alignment, Length, Padding, clipboard,
             widget::{column, row},
         },
         widget::{
@@ -54,10 +55,7 @@ impl UtilityPage for LoremIpsumGeneratorPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
 
-        let header = widget::row::with_capacity(2)
-            .push(widget::text::title2(fl!("lorem-ipsum-generator")))
-            .align_y(Alignment::End)
-            .spacing(space_s);
+        let header = page_header(LoremIpsumGeneratorPage::PAGE_NAME);
 
         let options_header: Element<'_, Message> = widget::text::title4(fl!("options"))
             .width(Length::Fill)
@@ -96,15 +94,9 @@ impl UtilityPage for LoremIpsumGeneratorPage {
             widget::text::title4(fl!("output"))
                 .width(Length::Fill)
                 .align_x(Alignment::Start),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::LoremIpsumGeneratorMessage(LoremIpsumGeneratorMessage::CopyText(
-                        Id::new(OUTPUT_EDITOR_ID)
-                    ),),
-                ),
-                widget::text(fl!("copy")),
-                widget::tooltip::Position::Bottom,
-            )
+            copy_button(Message::LoremIpsumGeneratorMessage(
+                LoremIpsumGeneratorMessage::CopyText(Id::new(OUTPUT_EDITOR_ID))
+            ))
         ]
         .align_y(Alignment::Center)
         .into();
@@ -172,6 +164,8 @@ impl UtilityPage for LoremIpsumGeneratorPage {
 }
 
 impl LoremIpsumGeneratorPage {
+    const PAGE_NAME: &str = "lorem-ipsum-generator";
+
     fn generate_lorem(&mut self) {
         let amount: usize = match self.selected_amount.parse::<usize>() {
             Ok(amt) => amt,

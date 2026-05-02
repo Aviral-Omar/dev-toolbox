@@ -2,6 +2,7 @@
 
 mod app;
 mod class;
+mod components;
 mod config;
 pub(crate) mod context_drawer_pages;
 mod i18n;

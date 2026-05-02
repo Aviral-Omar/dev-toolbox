@@ -1,6 +1,11 @@
 use {
     crate::{
-        Message, app::AppModel, class::text_editor_class, fl, i18n::LANGUAGE_LOADER,
+        Message,
+        app::AppModel,
+        class::text_editor_class,
+        components::{copy_button, page_header, paste_button},
+        fl,
+        i18n::LANGUAGE_LOADER,
         utility_pages::UtilityPage,
     },
     cosmic::{
@@ -55,10 +60,7 @@ impl UtilityPage for UrlEncoderDecoderPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
 
-        let header = widget::row::with_capacity(2)
-            .push(widget::text::title2(fl!("url-encoder-decoder")))
-            .align_y(Alignment::End)
-            .spacing(space_s);
+        let header = page_header(UrlEncoderDecoderPage::PAGE_NAME);
 
         let input_header: Element<'_, Message> = row![
             widget::text::title4(fl!("input"))
@@ -78,15 +80,9 @@ impl UtilityPage for UrlEncoderDecoderPage {
                     ))
                 },
             ),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-paste-symbolic")).on_press(
-                    Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::PasteText(
-                        Id::new(INPUT_EDITOR_ID)
-                    ),)
-                ),
-                widget::text(fl!("paste")),
-                widget::tooltip::Position::Bottom,
-            ),
+            paste_button(Message::UrlEncoderDecoderMessage(
+                UrlEncoderDecoderMessage::PasteText(Id::new(INPUT_EDITOR_ID))
+            )),
         ]
         .into();
 
@@ -116,15 +112,9 @@ impl UtilityPage for UrlEncoderDecoderPage {
             widget::text::title4(fl!("output"))
                 .width(Length::Fill)
                 .align_x(Alignment::Start),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::CopyText(Id::new(
-                        OUTPUT_EDITOR_ID
-                    )),),
-                ),
-                widget::text(fl!("copy")),
-                widget::tooltip::Position::Bottom,
-            )
+            copy_button(Message::UrlEncoderDecoderMessage(
+                UrlEncoderDecoderMessage::CopyText(Id::new(OUTPUT_EDITOR_ID))
+            ))
         ]
         .align_y(Alignment::Center)
         .into();
@@ -223,6 +213,8 @@ impl UtilityPage for UrlEncoderDecoderPage {
 }
 
 impl UrlEncoderDecoderPage {
+    const PAGE_NAME: &str = "url-encoder-decoder";
+
     fn convert_input(&mut self) {
         let input = self.input_content.text();
         match self.selected_operation {

@@ -66,7 +66,6 @@ password-generator = Password Generator
     .uppercase = Upper Case
     .symbols = Symbols
     .exclude-similar = Exclude Similar Characters
-    .password = Password
 lorem-ipsum-generator = Lorem Ipsum Generator
     .amount = Amount
     .words = Words

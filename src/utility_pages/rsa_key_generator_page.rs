@@ -1,6 +1,10 @@
 use {
     crate::{
-        Message, app::AppModel, class::text_editor_class, fl, i18n::LANGUAGE_LOADER,
+        Message,
+        app::AppModel,
+        class::text_editor_class,
+        components::{self, page_header, paste_button, status_bar},
+        fl,
         utility_pages::UtilityPage,
     },
     cosmic::{
@@ -59,6 +63,13 @@ impl Default for RSAKeyGeneratorPage {
     }
 }
 
+fn copy_button(id: &str) -> Element<'_, Message> {
+    components::copy_button(Message::RSAKeyGeneratorMessage(
+        RSAKeyGeneratorMessage::CopyText(Id::new(id.to_string())),
+    ))
+    .into()
+}
+
 fn replace_text_in_field(content: &mut text_editor::Content, text: String) {
     content.perform(text_editor::Action::SelectAll);
     content.perform(text_editor::Action::Edit(text_editor::Edit::Paste(
@@ -80,10 +91,7 @@ impl UtilityPage for RSAKeyGeneratorPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
 
-        let header = widget::row::with_capacity(2)
-            .push(widget::text::title2(fl!("rsa-key-generator")))
-            .align_y(Alignment::End)
-            .spacing(space_s);
+        let header = page_header(RSAKeyGeneratorPage::PAGE_NAME);
 
         let options_header: Element<'_, Message> = row![
             widget::text::title4(fl!("options"))
@@ -118,24 +126,10 @@ impl UtilityPage for RSAKeyGeneratorPage {
                 widget::text(fl!("rsa-key-generator", "generate-key-pair")),
                 widget::tooltip::Position::Bottom,
             ),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::RSAKeyGeneratorMessage(RSAKeyGeneratorMessage::CopyText(Id::new(
-                        PRIVATE_KEY_EDITOR_ID
-                    )),),
-                ),
-                widget::text(fl!("copy")),
-                widget::tooltip::Position::Bottom,
-            ),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-paste-symbolic")).on_press(
-                    Message::RSAKeyGeneratorMessage(RSAKeyGeneratorMessage::PasteText(Id::new(
-                        PRIVATE_KEY_EDITOR_ID
-                    )),)
-                ),
-                widget::text(fl!("paste")),
-                widget::tooltip::Position::Bottom,
-            ),
+            copy_button(PRIVATE_KEY_EDITOR_ID),
+            paste_button(Message::RSAKeyGeneratorMessage(
+                RSAKeyGeneratorMessage::PasteText(Id::new(PRIVATE_KEY_EDITOR_ID))
+            )),
         ]
         .into();
 
@@ -165,15 +159,7 @@ impl UtilityPage for RSAKeyGeneratorPage {
             widget::text::heading(fl!("rsa-key-generator", "public-key"))
                 .width(Length::Fill)
                 .align_x(Alignment::Start),
-            widget::tooltip(
-                widget::button::icon(widget::icon::from_name("edit-copy-symbolic")).on_press(
-                    Message::RSAKeyGeneratorMessage(RSAKeyGeneratorMessage::CopyText(Id::new(
-                        PUBLIC_KEY_EDITOR_ID
-                    )),),
-                ),
-                widget::text(fl!("copy")),
-                widget::tooltip::Position::Bottom,
-            ),
+            copy_button(PUBLIC_KEY_EDITOR_ID),
         ]
         .align_y(Alignment::Center)
         .into();
@@ -192,12 +178,7 @@ impl UtilityPage for RSAKeyGeneratorPage {
             })
             .into();
 
-        let status_row: Element<'_, Message> = row![
-            widget::text::heading(fl!("status")),
-            widget::space().width(8),
-            widget::text::body(LANGUAGE_LOADER.get_attr("rsa-key-generator", self.status.as_str())),
-        ]
-        .into();
+        let status_container = status_bar(&self.status.as_str(), RSAKeyGeneratorPage::PAGE_NAME);
 
         column![
             header,
@@ -207,9 +188,7 @@ impl UtilityPage for RSAKeyGeneratorPage {
             private_key_editor,
             public_key_header,
             public_key_editor,
-            column![status_row]
-                .width(Length::Fill)
-                .align_x(Alignment::Center),
+            status_container
         ]
         .spacing(space_s)
         .height(Length::Fill)
@@ -287,6 +266,8 @@ impl UtilityPage for RSAKeyGeneratorPage {
 }
 
 impl RSAKeyGeneratorPage {
+    const PAGE_NAME: &str = "rsa-key-generator";
+
     fn extract_public_key(&mut self) {
         let input = self.private_key_content.text();
         let private_key = RsaPrivateKey::from_pkcs8_pem(input.as_str());
