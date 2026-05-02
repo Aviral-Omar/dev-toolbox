@@ -16,6 +16,7 @@ i18n-embed-fl = "0.10.0"
 jsonwebtoken = { version = "10.3.0", features = ["rust_crypto"] }
 lipsum = "0.9.1"
 open = "5.3.3"
+passwords = "3.1.16"
 quick-xml = {version = "0.39.2", features = ["serialize"]}
 rand = "0.8.5"
 rsa = "0.9.10"

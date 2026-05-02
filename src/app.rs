@@ -12,6 +12,7 @@ use {
             gzip_compressor_decompressor_page::GZipCompressorDecompressorPage,
             jwt_debugger_page::JwtDebuggerPage,
             lorem_ipsum_generator_page::LoremIpsumGeneratorPage,
+            password_generator_page::PasswordGeneratorPage,
             rsa_key_generator_page::RSAKeyGeneratorPage,
             unix_time_converter_page::UnixTimeConverterPage,
             url_encoder_decoder_page::UrlEncoderDecoderPage,
@@ -120,6 +121,11 @@ impl cosmic::Application for AppModel {
             .icon(icon::from_name("preferences-vpn-symbolic"));
 
         nav.insert()
+            .text(fl!("password-generator"))
+            .data::<Page>(Page::PasswordGenerator)
+            .icon(icon::from_name("password-manager-symbolic"));
+
+        nav.insert()
             .text(fl!("lorem-ipsum-generator"))
             .data::<Page>(Page::LoremIpsumGenerator)
             .icon(
@@ -153,6 +159,10 @@ impl cosmic::Application for AppModel {
         utility_pages.insert(
             Page::RSAKeyGenerator,
             Box::new(RSAKeyGeneratorPage::default()),
+        );
+        utility_pages.insert(
+            Page::PasswordGenerator,
+            Box::new(PasswordGeneratorPage::default()),
         );
         utility_pages.insert(
             Page::LoremIpsumGenerator,
@@ -352,6 +362,13 @@ impl cosmic::Application for AppModel {
                     .unwrap()
                     .handle_message(message);
             }
+            Message::PasswordGeneratorMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::PasswordGenerator)
+                    .unwrap()
+                    .handle_message(message);
+            }
             Message::LoremIpsumGeneratorMessage(_) => {
                 return self
                     .utility_pages
@@ -405,11 +422,10 @@ pub enum Page {
     UrlEncoderDecoder,
     JwtDebugger,
     RSAKeyGenerator,
+    PasswordGenerator,
     LoremIpsumGenerator,
-    // Key Creation/Conversion
     // Hash Generator
     // UUID generator
-    // Password creator
     // Regex Tester
     // URL Parser
     // Colour Converter

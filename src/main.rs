@@ -16,6 +16,7 @@ use {
             gzip_compressor_decompressor_page::GZipCompressorDecompressorMessage,
             jwt_debugger_page::JwtDebuggerMessage,
             lorem_ipsum_generator_page::LoremIpsumGeneratorMessage,
+            password_generator_page::PasswordGeneratorMessage,
             rsa_key_generator_page::RSAKeyGeneratorMessage,
             unix_time_converter_page::UnixTimeConverterMessage,
             url_encoder_decoder_page::UrlEncoderDecoderMessage,
@@ -49,6 +50,7 @@ pub enum Message {
     UrlEncoderDecoderMessage(UrlEncoderDecoderMessage),
     JwtDebuggerMessage(JwtDebuggerMessage),
     RSAKeyGeneratorMessage(RSAKeyGeneratorMessage),
+    PasswordGeneratorMessage(PasswordGeneratorMessage),
     LoremIpsumGeneratorMessage(LoremIpsumGeneratorMessage),
     Surface(surface::Action),
 }

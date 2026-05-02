@@ -139,8 +139,7 @@ pub fn format_offset(offset: FixedOffset) -> String {
 impl UtilityPage for UnixTimeConverterPage {
     fn get_utility_page(&self) -> Element<'_, Message> {
         let space_s = cosmic::theme::spacing().space_s;
-        let header = widget::row::with_capacity(2)
-            .push(widget::text::title2(fl!("unix-time-converter")))
+        let header = row![widget::text::title2(fl!("unix-time-converter"))]
             .align_y(Alignment::End)
             .spacing(space_s);
 
