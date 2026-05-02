@@ -21,7 +21,10 @@ impl ContextDrawerPage for AboutPage {
                 .name(fl!("app-title"))
                 .icon(widget::icon::from_svg_bytes(APP_ICON))
                 .version(env!("CARGO_PKG_VERSION"))
-                .links([(fl!("repository"), REPOSITORY)])
+                .links([
+                    (fl!("repository"), REPOSITORY),
+                    (fl!("donate"), env!("DONATION_LINK")),
+                ])
                 .license(env!("CARGO_PKG_LICENSE"))
         });
 
