@@ -1263,6 +1263,7 @@ dependencies = [
  "open",
  "quick-xml 0.39.2",
  "rand 0.8.6",
+ "rsa",
  "rust-embed",
  "serde",
  "serde-saphyr",

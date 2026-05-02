@@ -12,6 +12,7 @@ use {
             gzip_compressor_decompressor_page::GZipCompressorDecompressorPage,
             jwt_debugger_page::JwtDebuggerPage,
             lorem_ipsum_generator_page::LoremIpsumGeneratorPage,
+            rsa_key_generator_page::RSAKeyGeneratorPage,
             unix_time_converter_page::UnixTimeConverterPage,
             url_encoder_decoder_page::UrlEncoderDecoderPage,
         },
@@ -114,6 +115,11 @@ impl cosmic::Application for AppModel {
             );
 
         nav.insert()
+            .text(fl!("rsa-key-generator"))
+            .data::<Page>(Page::RSAKeyGenerator)
+            .icon(icon::from_name("preferences-vpn-symbolic"));
+
+        nav.insert()
             .text(fl!("lorem-ipsum-generator"))
             .data::<Page>(Page::LoremIpsumGenerator)
             .icon(
@@ -144,6 +150,10 @@ impl cosmic::Application for AppModel {
             Box::new(UrlEncoderDecoderPage::default()),
         );
         utility_pages.insert(Page::JwtDebugger, Box::new(JwtDebuggerPage::default()));
+        utility_pages.insert(
+            Page::RSAKeyGenerator,
+            Box::new(RSAKeyGeneratorPage::default()),
+        );
         utility_pages.insert(
             Page::LoremIpsumGenerator,
             Box::new(LoremIpsumGeneratorPage::default()),
@@ -335,6 +345,13 @@ impl cosmic::Application for AppModel {
                     .unwrap()
                     .handle_message(message);
             }
+            Message::RSAKeyGeneratorMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::RSAKeyGenerator)
+                    .unwrap()
+                    .handle_message(message);
+            }
             Message::LoremIpsumGeneratorMessage(_) => {
                 return self
                     .utility_pages
@@ -387,6 +404,7 @@ pub enum Page {
     GZipCompressorDecompressor,
     UrlEncoderDecoder,
     JwtDebugger,
+    RSAKeyGenerator,
     LoremIpsumGenerator,
     // Key Creation/Conversion
     // Hash Generator

@@ -18,6 +18,7 @@ lipsum = "0.9.1"
 open = "5.3.3"
 quick-xml = {version = "0.39.2", features = ["serialize"]}
 rand = "0.8.5"
+rsa = "0.9.10"
 rust-embed = "8.11.0"
 serde = "1.0.228"
 serde-saphyr = "0.0.21"

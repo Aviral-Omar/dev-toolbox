@@ -1,5 +1,7 @@
 use {
-    crate::{APP_ICON, Message, REPOSITORY, context_drawer_pages::ContextDrawerPage, fl},
+    crate::{
+        APP_ICON, DONATION_LINK, Message, REPOSITORY, context_drawer_pages::ContextDrawerPage, fl,
+    },
     cosmic::{
         Element,
         widget::{
@@ -23,7 +25,7 @@ impl ContextDrawerPage for AboutPage {
                 .version(env!("CARGO_PKG_VERSION"))
                 .links([
                     (fl!("repository"), REPOSITORY),
-                    (fl!("donate"), env!("DONATION_LINK")),
+                    (fl!("donate"), DONATION_LINK),
                 ])
                 .license(env!("CARGO_PKG_LICENSE"))
         });
