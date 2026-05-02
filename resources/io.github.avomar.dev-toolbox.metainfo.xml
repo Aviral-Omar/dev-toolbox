@@ -60,6 +60,9 @@
     <keyword>Utility</keyword>
   </keywords>
   <content_rating type="oars-1.1" />
+  <provides>
+    <id>com.system76.CosmicApplication</id>
+  </provides>
   <screenshots>
     <screenshot type="default">
       <image
