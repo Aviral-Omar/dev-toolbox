@@ -251,7 +251,7 @@ impl UtilityPage for JwtDebuggerPage {
                     column![public_key_header, public_key_editor].spacing(space_s),
                     column![private_key_header, private_key_editor].spacing(space_s)
                 ]
-                .height(Length::FillPortion(1))
+                .height(Length::FillPortion(2))
                 .spacing(space_s),
             );
         }
