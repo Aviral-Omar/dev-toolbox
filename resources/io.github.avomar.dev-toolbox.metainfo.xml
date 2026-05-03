@@ -95,12 +95,34 @@
       <caption>JWT Debugger Page</caption>
     </screenshot>
     <screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/key-generator.png</image>
+      <caption>RSA Key Generator Page</caption>
+    </screenshot>
+    <screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/password-generator.png</image>
+      <caption>Password Generator Page</caption>
+    </screenshot>
+    <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/lorem-ipsum.png</image>
       <caption>Lorem ipsum Generator Page</caption>
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.1.0" date="2026-05-03">
+      <description>
+      <p>Release description</p>
+      <ul>
+          <li>Added RSA Key Generator Page</li>
+          <li>Added Password Generator Page</li>
+          <li>Added status bar to more pages</li>
+      </ul>
+      </description>
+    </release>
     <release version="2.0.0" date="2026-04-24">
         <description>
         <p>Release description</p>
