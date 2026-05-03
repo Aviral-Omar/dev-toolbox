@@ -4,6 +4,7 @@ use {
         app::AppModel,
         components::{
             copy_button, input_text_editor, output_text_editor, page_header, paste_button,
+            status_bar,
         },
         fl,
         utility_pages::UtilityPage,
@@ -42,13 +43,26 @@ pub enum DataConverterFormatterMessage {
     NoOp,
 }
 
-#[derive(Default)]
 pub(crate) struct DataConverterFormatterPage {
     input_content: text_editor::Content,
     output_content: text_editor::Content,
     input_format: usize,
     output_format: usize,
     selected_indent: usize,
+    status: String,
+}
+
+impl Default for DataConverterFormatterPage {
+    fn default() -> Self {
+        DataConverterFormatterPage {
+            input_content: text_editor::Content::default(),
+            output_content: text_editor::Content::default(),
+            input_format: usize::default(),
+            output_format: usize::default(),
+            selected_indent: usize::default(),
+            status: "ok".to_string(),
+        }
+    }
 }
 
 impl UtilityPage for DataConverterFormatterPage {
@@ -138,12 +152,15 @@ impl UtilityPage for DataConverterFormatterPage {
             None::<u32>,
         );
 
+        let status_bar = status_bar(self.status.as_str(), DataConverterFormatterPage::PAGE_NAME);
+
         column![
             header,
             input_header,
             input_editor,
             output_header,
-            output_editor
+            output_editor,
+            status_bar
         ]
         .spacing(space_s)
         .height(Length::Fill)
@@ -249,6 +266,7 @@ impl DataConverterFormatterPage {
                         serde_json::Serializer::with_formatter(&mut buf, formatter);
                     value.serialize(&mut json_serializer).unwrap();
                     output_string = String::from_utf8(buf).unwrap();
+                    self.status = "ok".to_string();
                 }
                 1 => {
                     output_string = String::new();
@@ -257,6 +275,7 @@ impl DataConverterFormatterPage {
                         indent_count,
                     );
                     value.serialize(&mut yaml_serializer).unwrap();
+                    self.status = "ok".to_string();
                 }
                 2 => {
                     output_string = String::new();
@@ -267,16 +286,23 @@ impl DataConverterFormatterPage {
                     xml_serializer.empty_element_handling(
                         quick_xml::se::EmptyElementHandling::SelfClosedWithSpace,
                     );
-                    if let Some(err) = value.serialize(xml_serializer).err() {
-                        println!("Error while converting XML: {}", err);
+                    if let Some(_) = value.serialize(xml_serializer).err() {
+                        self.status = "xml-serialization-error".to_string();
+                    } else {
+                        self.status = "ok".to_string();
                     }
                 }
-                _ => output_string = toml::to_string_pretty(&value).unwrap(),
+                _ => {
+                    output_string = toml::to_string_pretty(&value).unwrap();
+                    self.status = "ok".to_string();
+                }
             }
             self.output_content
                 .perform(text_editor::Action::Edit(text_editor::Edit::Paste(
                     Arc::new(output_string),
                 )));
+        } else {
+            self.status = "invalid-input-format".to_string();
         }
     }
 }

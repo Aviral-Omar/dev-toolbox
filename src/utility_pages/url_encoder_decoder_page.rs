@@ -4,6 +4,7 @@ use {
         app::AppModel,
         components::{
             copy_button, input_text_editor, output_text_editor, page_header, paste_button,
+            status_bar,
         },
         fl,
         i18n::LANGUAGE_LOADER,
@@ -41,6 +42,7 @@ pub(crate) struct UrlEncoderDecoderPage {
     input_content: text_editor::Content,
     output_content: text_editor::Content,
     selected_operation: usize,
+    status: String,
 }
 
 impl Default for UrlEncoderDecoderPage {
@@ -49,6 +51,7 @@ impl Default for UrlEncoderDecoderPage {
             input_content: text_editor::Content::default(),
             output_content: text_editor::Content::default(),
             selected_operation: 1,
+            status: "ok".to_string(),
         }
     }
 }
@@ -116,12 +119,15 @@ impl UtilityPage for UrlEncoderDecoderPage {
             None::<u32>,
         );
 
+        let status_bar = status_bar(self.status.as_str(), UrlEncoderDecoderPage::PAGE_NAME);
+
         column![
             header,
             input_header,
             input_editor,
             output_header,
-            output_editor
+            output_editor,
+            status_bar
         ]
         .spacing(space_s)
         .height(Length::Fill)
@@ -209,6 +215,7 @@ impl UrlEncoderDecoderPage {
                     .perform(text_editor::Action::Edit(text_editor::Edit::Paste(
                         Arc::new(urlencoding::encode(input.as_str()).into_owned()),
                     )));
+                self.status = "ok".to_string();
             }
             _ => {
                 let decoded_url = urlencoding::decode(input.as_str());
@@ -220,9 +227,10 @@ impl UrlEncoderDecoderPage {
                         self.output_content.perform(text_editor::Action::Edit(
                             text_editor::Edit::Paste(Arc::new(decoded_url.into_owned())),
                         ));
+                        self.status = "ok".to_string();
                     }
-                    Err(err) => {
-                        println!("Error decoding URL: {:?}", err);
+                    Err(_) => {
+                        self.status = "url-decoding-error".to_string();
                     }
                 }
             }

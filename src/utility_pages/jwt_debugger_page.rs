@@ -175,7 +175,7 @@ impl UtilityPage for JwtDebuggerPage {
             None::<u32>,
         );
 
-        let status_container = status_bar(&self.status.as_str(), JwtDebuggerPage::PAGE_NAME);
+        let status_bar = status_bar(&self.status.as_str(), JwtDebuggerPage::PAGE_NAME);
 
         let mut column = widget::column::with_capacity(10)
             .spacing(space_s)
@@ -267,7 +267,7 @@ impl UtilityPage for JwtDebuggerPage {
                 .height(Length::FillPortion(3))
                 .spacing(space_s),
             )
-            .push(status_container);
+            .push(status_bar);
         column.into()
     }
 

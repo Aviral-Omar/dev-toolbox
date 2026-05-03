@@ -4,6 +4,7 @@ use {
         app::AppModel,
         components::{
             copy_button, input_text_editor, output_text_editor, page_header, paste_button,
+            status_bar,
         },
         fl,
         i18n::LANGUAGE_LOADER,
@@ -38,12 +39,24 @@ pub enum Base64StringEncoderDecoderMessage {
     NoOp,
 }
 
-#[derive(Default)]
 pub(crate) struct Base64StringEncoderDecoderPage {
     input_content: text_editor::Content,
     output_content: text_editor::Content,
     selected_operation: usize,
     url_safe: bool,
+    status: String,
+}
+
+impl Default for Base64StringEncoderDecoderPage {
+    fn default() -> Self {
+        Base64StringEncoderDecoderPage {
+            input_content: text_editor::Content::default(),
+            output_content: text_editor::Content::default(),
+            selected_operation: usize::default(),
+            url_safe: bool::default(),
+            status: "ok".to_string(),
+        }
+    }
 }
 
 impl UtilityPage for Base64StringEncoderDecoderPage {
@@ -121,12 +134,18 @@ impl UtilityPage for Base64StringEncoderDecoderPage {
             None::<u32>,
         );
 
+        let status_bar = status_bar(
+            self.status.as_str(),
+            Base64StringEncoderDecoderPage::PAGE_NAME,
+        );
+
         column![
             header,
             input_header,
             input_editor,
             output_header,
-            output_editor
+            output_editor,
+            status_bar
         ]
         .spacing(space_s)
         .height(Length::Fill)
@@ -230,6 +249,7 @@ impl Base64StringEncoderDecoderPage {
                     .perform(text_editor::Action::Edit(text_editor::Edit::Paste(
                         Arc::new(engine.encode(input.trim().as_bytes())),
                     )));
+                self.status = "ok".to_string();
             }
             _ => {
                 let decode_result = engine.decode(input.trim());
@@ -242,8 +262,9 @@ impl Base64StringEncoderDecoderPage {
                             String::from_utf8_lossy(bytes.as_slice()).into_owned(),
                         )),
                     ));
-                } else if let Err(err) = decode_result {
-                    println!("Base64 Decoding Error: {}", err);
+                    self.status = "ok".to_string();
+                } else if let Err(_) = decode_result {
+                    self.status = "base64-decoding-error".to_string();
                 }
             }
         }

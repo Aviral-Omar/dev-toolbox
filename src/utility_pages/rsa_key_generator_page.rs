@@ -161,7 +161,7 @@ impl UtilityPage for RSAKeyGeneratorPage {
             None::<u32>,
         );
 
-        let status_container = status_bar(&self.status.as_str(), RSAKeyGeneratorPage::PAGE_NAME);
+        let status_bar = status_bar(&self.status.as_str(), RSAKeyGeneratorPage::PAGE_NAME);
 
         column![
             header,
@@ -171,7 +171,7 @@ impl UtilityPage for RSAKeyGeneratorPage {
             private_key_editor,
             public_key_header,
             public_key_editor,
-            status_container
+            status_bar
         ]
         .spacing(space_s)
         .height(Length::Fill)

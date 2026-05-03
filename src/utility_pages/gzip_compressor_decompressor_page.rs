@@ -4,6 +4,7 @@ use {
         app::AppModel,
         components::{
             copy_button, input_text_editor, output_text_editor, page_header, paste_button,
+            status_bar,
         },
         fl,
         i18n::LANGUAGE_LOADER,
@@ -41,11 +42,22 @@ pub enum GZipCompressorDecompressorMessage {
     NoOp,
 }
 
-#[derive(Default)]
 pub(crate) struct GZipCompressorDecompressorPage {
     input_content: text_editor::Content,
     output_content: text_editor::Content,
     selected_operation: usize,
+    status: String,
+}
+
+impl Default for GZipCompressorDecompressorPage {
+    fn default() -> Self {
+        GZipCompressorDecompressorPage {
+            input_content: text_editor::Content::default(),
+            output_content: text_editor::Content::default(),
+            selected_operation: usize::default(),
+            status: "ok".to_string(),
+        }
+    }
 }
 
 impl UtilityPage for GZipCompressorDecompressorPage {
@@ -113,12 +125,18 @@ impl UtilityPage for GZipCompressorDecompressorPage {
             None::<u32>,
         );
 
+        let status_bar = status_bar(
+            &self.status.as_str(),
+            GZipCompressorDecompressorPage::PAGE_NAME,
+        );
+
         column![
             header,
             input_header,
             input_editor,
             output_header,
-            output_editor
+            output_editor,
+            status_bar
         ]
         .spacing(space_s)
         .height(Length::Fill)
@@ -217,6 +235,7 @@ impl GZipCompressorDecompressorPage {
                     .perform(text_editor::Action::Edit(text_editor::Edit::Paste(
                         Arc::new(engine.encode(compressed_data)),
                     )));
+                self.status = "ok".to_string();
             }
             _ => {
                 let compressed_data = engine.decode(input.trim());
@@ -231,11 +250,12 @@ impl GZipCompressorDecompressorPage {
                             self.output_content.perform(text_editor::Action::Edit(
                                 text_editor::Edit::Paste(Arc::new(decompressed_string)),
                             ));
+                            self.status = "ok".to_string();
                         }
-                        Err(err) => println!("GZip Decompression Error: {}", err),
+                        Err(_) => self.status = "gzip-decompression-error".to_string(),
                     };
-                } else if let Err(err) = compressed_data {
-                    println!("Base64 Decoding Error: {}", err);
+                } else if let Err(_) = compressed_data {
+                    self.status = "base64-decoding-error".to_string();
                 }
             }
         }
