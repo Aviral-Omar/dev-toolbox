@@ -2,8 +2,9 @@ use {
     crate::{
         Message,
         app::AppModel,
-        class::text_editor_class,
-        components::{copy_button, page_header, paste_button},
+        components::{
+            copy_button, input_text_editor, output_text_editor, page_header, paste_button,
+        },
         fl,
         i18n::LANGUAGE_LOADER,
         utility_pages::UtilityPage,
@@ -11,14 +12,10 @@ use {
     cosmic::{
         self, Application, Element, Task,
         iced::{
-            self, Alignment, Length, Padding, clipboard,
-            keyboard::{Key, key},
+            Alignment, Length, clipboard,
             widget::{column, row},
         },
-        widget::{
-            self, Id,
-            text_editor::{self, Binding, TextEditor},
-        },
+        widget::{self, Id, text_editor},
     },
     std::sync::Arc,
     urlencoding,
@@ -86,27 +83,16 @@ impl UtilityPage for UrlEncoderDecoderPage {
         ]
         .into();
 
-        let input_editor: Element<'_, Message> = TextEditor::new(&self.input_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
+        let input_editor: Element<'_, Message> = input_text_editor(
+            &self.input_content,
+            |action| {
                 Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::InputEditorAction(
                     action,
                 ))
-            })
-            .key_binding(|key_press| {
-                if key_press.key == Key::Named(key::Named::Tab)
-                    && matches!(key_press.status, text_editor::Status::Focused { .. })
-                {
-                    return Some(Binding::Insert('\t'));
-                }
-                return Binding::from_key_press(key_press);
-            })
-            .into();
+            },
+            None,
+            None::<u32>,
+        );
 
         let output_header: Element<'_, Message> = row![
             widget::text::title4(fl!("output"))
@@ -119,19 +105,16 @@ impl UtilityPage for UrlEncoderDecoderPage {
         .align_y(Alignment::Center)
         .into();
 
-        let output_editor: Element<'_, Message> = TextEditor::new(&self.output_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
+        let output_editor: Element<'_, Message> = output_text_editor(
+            &self.output_content,
+            |action| {
                 Message::UrlEncoderDecoderMessage(UrlEncoderDecoderMessage::OutputEditorAction(
                     action,
                 ))
-            })
-            .into();
+            },
+            None,
+            None::<u32>,
+        );
 
         column![
             header,

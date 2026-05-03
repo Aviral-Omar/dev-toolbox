@@ -2,22 +2,19 @@ use {
     crate::{
         Message,
         app::AppModel,
-        class::text_editor_class,
-        components::{copy_button, page_header, paste_button},
+        components::{
+            copy_button, input_text_editor, output_text_editor, page_header, paste_button,
+        },
         fl,
         utility_pages::UtilityPage,
     },
     cosmic::{
         self, Application, Element, Task,
         iced::{
-            self, Alignment, Length, Padding, clipboard,
-            keyboard::{Key, key},
+            Alignment, Length, clipboard,
             widget::{column, row},
         },
-        widget::{
-            self, Id,
-            text_editor::{self, Binding, TextEditor},
-        },
+        widget::{self, Id, text_editor},
     },
     quick_xml,
     serde::Serialize,
@@ -82,27 +79,16 @@ impl UtilityPage for DataConverterFormatterPage {
         ]
         .into();
 
-        let input_editor: Element<'_, Message> = TextEditor::new(&self.input_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
+        let input_editor: Element<'_, Message> = input_text_editor(
+            &self.input_content,
+            |action| {
                 Message::DataConverterFormatterMessage(
                     DataConverterFormatterMessage::InputEditorAction(action),
                 )
-            })
-            .key_binding(|key_press| {
-                if key_press.key == Key::Named(key::Named::Tab)
-                    && matches!(key_press.status, text_editor::Status::Focused { .. })
-                {
-                    return Some(Binding::Insert('\t'));
-                }
-                return Binding::from_key_press(key_press);
-            })
-            .into();
+            },
+            None,
+            None::<u32>,
+        );
 
         let output_header: Element<'_, Message> = widget::row([])
             .push(
@@ -141,19 +127,16 @@ impl UtilityPage for DataConverterFormatterPage {
             )))
             .into();
 
-        let output_editor: Element<'_, Message> = TextEditor::new(&self.output_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
+        let output_editor: Element<'_, Message> = output_text_editor(
+            &self.output_content,
+            |action| {
                 Message::DataConverterFormatterMessage(
                     DataConverterFormatterMessage::OutputEditorAction(action),
                 )
-            })
-            .into();
+            },
+            None,
+            None::<u32>,
+        );
 
         column![
             header,

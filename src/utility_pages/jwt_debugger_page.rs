@@ -2,8 +2,8 @@ use {
     crate::{
         Message,
         app::AppModel,
-        class::{text_editor_class, text_input_style},
-        components::{self, page_header, status_bar},
+        class::text_input_style,
+        components::{self, input_text_editor, page_header, status_bar},
         fl,
         i18n::LANGUAGE_LOADER,
         utility_pages::UtilityPage,
@@ -11,14 +11,10 @@ use {
     cosmic::{
         self, Application, Element, Task,
         iced::{
-            self, Alignment, Length, Padding, clipboard,
-            keyboard::{Key, key},
+            Alignment, Length, clipboard,
             widget::{column, row},
         },
-        widget::{
-            self, Id,
-            text_editor::{self, Binding, TextEditor},
-        },
+        widget::{self, Id, text_editor},
     },
     jsonwebtoken::{self, Algorithm},
     std::sync::Arc,
@@ -138,26 +134,12 @@ impl UtilityPage for JwtDebuggerPage {
         ]
         .into();
 
-        let token_editor: Element<'_, Message> = TextEditor::new(&self.token_content)
-            .padding(Padding::new(12.0))
-            .min_height(200)
-            .height(Length::FillPortion(2))
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
-                Message::JwtDebuggerMessage(JwtDebuggerMessage::TokenEditorAction(action))
-            })
-            .key_binding(|key_press| {
-                if key_press.key == Key::Named(key::Named::Tab)
-                    && matches!(key_press.status, text_editor::Status::Focused { .. })
-                {
-                    return Some(Binding::Insert('\t'));
-                }
-                return Binding::from_key_press(key_press);
-            })
-            .into();
+        let token_editor: Element<'_, Message> = input_text_editor(
+            &self.token_content,
+            |action| Message::JwtDebuggerMessage(JwtDebuggerMessage::TokenEditorAction(action)),
+            Some(Length::FillPortion(2)),
+            Some(200),
+        );
 
         let header_header: Element<'_, Message> = row![
             widget::text::title4(fl!("jwt-debugger", "header"))
@@ -169,25 +151,12 @@ impl UtilityPage for JwtDebuggerPage {
         .align_y(Alignment::Center)
         .into();
 
-        let header_editor: Element<'_, Message> = TextEditor::new(&self.header_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
-                Message::JwtDebuggerMessage(JwtDebuggerMessage::HeaderEditorAction(action))
-            })
-            .key_binding(|key_press| {
-                if key_press.key == Key::Named(key::Named::Tab)
-                    && matches!(key_press.status, text_editor::Status::Focused { .. })
-                {
-                    return Some(Binding::Insert('\t'));
-                }
-                return Binding::from_key_press(key_press);
-            })
-            .into();
+        let header_editor: Element<'_, Message> = input_text_editor(
+            &self.header_content,
+            |action| Message::JwtDebuggerMessage(JwtDebuggerMessage::HeaderEditorAction(action)),
+            None,
+            None::<u32>,
+        );
 
         let claims_header: Element<'_, Message> = row![
             widget::text::title4(fl!("jwt-debugger", "claims"))
@@ -199,25 +168,12 @@ impl UtilityPage for JwtDebuggerPage {
         .align_y(Alignment::Center)
         .into();
 
-        let claims_editor: Element<'_, Message> = TextEditor::new(&self.claims_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
-                Message::JwtDebuggerMessage(JwtDebuggerMessage::ClaimsEditorAction(action))
-            })
-            .key_binding(|key_press| {
-                if key_press.key == Key::Named(key::Named::Tab)
-                    && matches!(key_press.status, text_editor::Status::Focused { .. })
-                {
-                    return Some(Binding::Insert('\t'));
-                }
-                return Binding::from_key_press(key_press);
-            })
-            .into();
+        let claims_editor: Element<'_, Message> = input_text_editor(
+            &self.claims_content,
+            |action| Message::JwtDebuggerMessage(JwtDebuggerMessage::ClaimsEditorAction(action)),
+            None,
+            None::<u32>,
+        );
 
         let status_container = status_bar(&self.status.as_str(), JwtDebuggerPage::PAGE_NAME);
 
@@ -262,25 +218,14 @@ impl UtilityPage for JwtDebuggerPage {
             .align_y(Alignment::Center)
             .into();
 
-            let public_key_editor: Element<'_, Message> = TextEditor::new(&self.public_key_content)
-                .padding(Padding::new(12.0))
-                .height(Length::Fill)
-                .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                    text_editor_class,
-                )))
-                .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-                .on_action(|action| {
+            let public_key_editor: Element<'_, Message> = input_text_editor(
+                &self.public_key_content,
+                |action| {
                     Message::JwtDebuggerMessage(JwtDebuggerMessage::PublicKeyEditorAction(action))
-                })
-                .key_binding(|key_press| {
-                    if key_press.key == Key::Named(key::Named::Tab)
-                        && matches!(key_press.status, text_editor::Status::Focused { .. })
-                    {
-                        return Some(Binding::Insert('\t'));
-                    }
-                    return Binding::from_key_press(key_press);
-                })
-                .into();
+                },
+                None,
+                None::<u32>,
+            );
 
             let private_key_header: Element<'_, Message> = row![
                 widget::text::heading(fl!("jwt-debugger", "private-key"))
@@ -292,28 +237,14 @@ impl UtilityPage for JwtDebuggerPage {
             .align_y(Alignment::Center)
             .into();
 
-            let private_key_editor: Element<'_, Message> =
-                TextEditor::new(&self.private_key_content)
-                    .padding(Padding::new(12.0))
-                    .height(Length::Fill)
-                    .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                        text_editor_class,
-                    )))
-                    .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-                    .on_action(|action| {
-                        Message::JwtDebuggerMessage(JwtDebuggerMessage::PrivateKeyEditorAction(
-                            action,
-                        ))
-                    })
-                    .key_binding(|key_press| {
-                        if key_press.key == Key::Named(key::Named::Tab)
-                            && matches!(key_press.status, text_editor::Status::Focused { .. })
-                        {
-                            return Some(Binding::Insert('\t'));
-                        }
-                        return Binding::from_key_press(key_press);
-                    })
-                    .into();
+            let private_key_editor: Element<'_, Message> = input_text_editor(
+                &self.private_key_content,
+                |action| {
+                    Message::JwtDebuggerMessage(JwtDebuggerMessage::PrivateKeyEditorAction(action))
+                },
+                None,
+                None::<u32>,
+            );
 
             column = column.push(
                 row![

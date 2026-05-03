@@ -2,22 +2,19 @@ use {
     crate::{
         Message,
         app::AppModel,
-        class::text_editor_class,
-        components::{self, page_header, paste_button, status_bar},
+        components::{
+            self, input_text_editor, output_text_editor, page_header, paste_button, status_bar,
+        },
         fl,
         utility_pages::UtilityPage,
     },
     cosmic::{
         self, Application, Element, Task,
         iced::{
-            self, Alignment, Length, Padding, clipboard,
-            keyboard::{Key, key},
+            Alignment, Length, clipboard,
             widget::{column, row},
         },
-        widget::{
-            self, Id,
-            text_editor::{self, Binding, TextEditor},
-        },
+        widget::{self, Id, text_editor},
     },
     rand,
     rsa::{
@@ -133,27 +130,16 @@ impl UtilityPage for RSAKeyGeneratorPage {
         ]
         .into();
 
-        let private_key_editor: Element<'_, Message> = TextEditor::new(&self.private_key_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
+        let private_key_editor: Element<'_, Message> = input_text_editor(
+            &self.private_key_content,
+            |action| {
                 Message::RSAKeyGeneratorMessage(RSAKeyGeneratorMessage::PrivateKeyEditorAction(
                     action,
                 ))
-            })
-            .key_binding(|key_press| {
-                if key_press.key == Key::Named(key::Named::Tab)
-                    && matches!(key_press.status, text_editor::Status::Focused { .. })
-                {
-                    return Some(Binding::Insert('\t'));
-                }
-                return Binding::from_key_press(key_press);
-            })
-            .into();
+            },
+            None,
+            None::<u32>,
+        );
 
         let public_key_header: Element<'_, Message> = row![
             widget::text::heading(fl!("rsa-key-generator", "public-key"))
@@ -164,19 +150,16 @@ impl UtilityPage for RSAKeyGeneratorPage {
         .align_y(Alignment::Center)
         .into();
 
-        let public_key_editor: Element<'_, Message> = TextEditor::new(&self.public_key_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
+        let public_key_editor: Element<'_, Message> = output_text_editor(
+            &self.public_key_content,
+            |action| {
                 Message::RSAKeyGeneratorMessage(RSAKeyGeneratorMessage::PublicKeyEditorAction(
                     action,
                 ))
-            })
-            .into();
+            },
+            None,
+            None::<u32>,
+        );
 
         let status_container = status_bar(&self.status.as_str(), RSAKeyGeneratorPage::PAGE_NAME);
 

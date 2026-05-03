@@ -2,8 +2,8 @@ use {
     crate::{
         Message,
         app::AppModel,
-        class::{text_editor_class, text_input_style},
-        components::{copy_button, page_header},
+        class::text_input_style,
+        components::{copy_button, output_text_editor, page_header},
         fl,
         i18n::LANGUAGE_LOADER,
         utility_pages::UtilityPage,
@@ -11,13 +11,10 @@ use {
     cosmic::{
         self, Application, Element, Task,
         iced::{
-            self, Alignment, Length, Padding, clipboard,
+            Alignment, Length, clipboard,
             widget::{column, row},
         },
-        widget::{
-            self, Id,
-            text_editor::{self, TextEditor},
-        },
+        widget::{self, Id, text_editor},
     },
     lipsum::{lipsum_with_rng, lipsum_words_with_rng},
     rand::{self, Rng},
@@ -101,19 +98,16 @@ impl UtilityPage for LoremIpsumGeneratorPage {
         .align_y(Alignment::Center)
         .into();
 
-        let output_editor: Element<'_, Message> = TextEditor::new(&self.output_content)
-            .padding(Padding::new(12.0))
-            .height(Length::Fill)
-            .class(cosmic::theme::iced::TextEditor::Custom(Box::new(
-                text_editor_class,
-            )))
-            .wrapping(iced::core::text::Wrapping::WordOrGlyph)
-            .on_action(|action| {
+        let output_editor: Element<'_, Message> = output_text_editor(
+            &self.output_content,
+            |action| {
                 Message::LoremIpsumGeneratorMessage(LoremIpsumGeneratorMessage::OutputEditorAction(
                     action,
                 ))
-            })
-            .into();
+            },
+            None,
+            None::<u32>,
+        );
 
         column![
             header,
