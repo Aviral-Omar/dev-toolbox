@@ -3,9 +3,11 @@ Name=OmniDev
 Type=Application
 Exec=dev-toolbox
 Comment=Everyday utilities for developers
+Comment[cs]=Každodenní nástroje pro vývojáře
 # Translators: Do NOT translate or transliterate this text (this is an icon file name)!
 Icon=io.github.avomar.dev-toolbox
 Terminal=false
 StartupNotify=true
 Categories=COSMIC;Development;Utility
 Keywords=COSMIC;Development;Tool;Utility
+Keywords[cs]=COSMIC;Vývoj;Nástroj;

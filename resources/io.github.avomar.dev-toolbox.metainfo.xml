@@ -5,17 +5,27 @@
   <project_license>GPL-3.0</project_license>
   <name>OmniDev</name>
   <summary>Utilities for developers</summary>
+  <summary xml:lang="cs">Nástroje pro vývojáře</summary>
   <description>
     <p
         >A collection of tools and utilities for developers. Following tools are currently available:</p>
+    <p xml:lang="cs"
+        >Kolekce nástrojů pro vývojáře. Aktuálně jsou k dispozici následující nástroje:</p>
     <ul>
       <li>UNIX Time Converter</li>
+      <li xml:lang="cs">Převodník unixového času</li>
       <li>Data Converter/Formatter</li>
+      <li xml:lang="cs">Převodník a formátovač dat</li>
       <li>Base64 Encoder/Decoder</li>
+      <li xml:lang="cs">Kodér a dekodér Base64</li>
       <li>GZip Compressor/Decompressor</li>
+      <li xml:lang="cs">Kompresor a dekompresor GZip</li>
       <li>URL Encoder/Decoder</li>
+      <li xml:lang="cs">Kodér a dekodér URL</li>
       <li>JWT Debugger</li>
+      <li xml:lang="cs">Debugger JWT</li>
       <li>Lorem ipsum Generator</li>
+      <li xml:lang="cs">Generátor Lorem Ipsum</li>
     </ul>
   </description>
   <icon type="stock">
@@ -58,6 +68,8 @@
     <keyword>Development</keyword>
     <keyword>Tool</keyword>
     <keyword>Utility</keyword>
+    <keyword xml:lang="cs">Vývoj</keyword>
+    <keyword xml:lang="cs">Nástroj</keyword>
   </keywords>
   <content_rating type="oars-1.1" />
   <provides>
@@ -68,46 +80,55 @@
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/unix-timestamp.png</image>
       <caption>UNIX Timestamp Converter Page</caption>
+      <caption xml:lang="cs">Stránka převodníku unixového času</caption>
     </screenshot>
     <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/data-converter.png</image>
       <caption>Data Converter/Formatter Page</caption>
+      <caption xml:lang="cs">Stránka převodníku a formátovače dat</caption>
     </screenshot>
     <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/gzip.png</image>
       <caption>GZip Compressor/Decompressor Page</caption>
+      <caption xml:lang="cs">Stránka kompresoru a dekompresoru GZip</caption>
     </screenshot>
     <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/base64.png</image>
       <caption>Base64 Encoder/Decoder Page</caption>
+      <caption xml:lang="cs">Stránka kodéru a dekodéru Base64</caption>
     </screenshot>
     <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/url-decoder.png</image>
       <caption>URL Encoder/Decoder Page</caption>
+      <caption xml:lang="cs">Stránka kodéru a dekodéru URL</caption>
     </screenshot>
     <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/jwt-debugger.png</image>
       <caption>JWT Debugger Page</caption>
+      <caption xml:lang="cs">Stránka debuggeru JWT</caption>
     </screenshot>
     <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/key-generator.png</image>
       <caption>RSA Key Generator Page</caption>
+      <caption xml:lang="cs">Stránka generátoru klíčů RSA</caption>
     </screenshot>
     <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/password-generator.png</image>
       <caption>Password Generator Page</caption>
+      <caption xml:lang="cs">Stránka generátoru hesel</caption>
     </screenshot>
     <screenshot>
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/lorem-ipsum.png</image>
       <caption>Lorem ipsum Generator Page</caption>
+      <caption xml:lang="cs">Stránka generátoru Lorem Ipsum</caption>
     </screenshot>
   </screenshots>
   <releases>
