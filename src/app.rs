@@ -10,7 +10,7 @@ use {
             UtilityPage, base64_string_encoder_decoder_page::Base64StringEncoderDecoderPage,
             data_converter_formatter_page::DataConverterFormatterPage,
             gzip_compressor_decompressor_page::GZipCompressorDecompressorPage,
-            jwt_debugger_page::JwtDebuggerPage,
+            hash_generator_page::HashGeneratorPage, jwt_debugger_page::JwtDebuggerPage,
             lorem_ipsum_generator_page::LoremIpsumGeneratorPage,
             password_generator_page::PasswordGeneratorPage,
             rsa_key_generator_page::RSAKeyGeneratorPage,
@@ -126,6 +126,15 @@ impl cosmic::Application for AppModel {
             .icon(icon::from_name("password-manager-symbolic"));
 
         nav.insert()
+            .text(fl!("hash-generator"))
+            .data::<Page>(Page::HashGenerator)
+            .icon(
+                icon::from_svg_bytes(include_bytes!("../resources/icons/hash-symbolic.svg"))
+                    .symbolic(true)
+                    .icon(),
+            );
+
+        nav.insert()
             .text(fl!("lorem-ipsum-generator"))
             .data::<Page>(Page::LoremIpsumGenerator)
             .icon(
@@ -164,6 +173,7 @@ impl cosmic::Application for AppModel {
             Page::PasswordGenerator,
             Box::new(PasswordGeneratorPage::default()),
         );
+        utility_pages.insert(Page::HashGenerator, Box::new(HashGeneratorPage::default()));
         utility_pages.insert(
             Page::LoremIpsumGenerator,
             Box::new(LoremIpsumGeneratorPage::default()),
@@ -369,6 +379,13 @@ impl cosmic::Application for AppModel {
                     .unwrap()
                     .handle_message(message);
             }
+            Message::HashGeneratorMessage(_) => {
+                return self
+                    .utility_pages
+                    .get_mut(&Page::HashGenerator)
+                    .unwrap()
+                    .handle_message(message);
+            }
             Message::LoremIpsumGeneratorMessage(_) => {
                 return self
                     .utility_pages
@@ -424,7 +441,7 @@ pub enum Page {
     RSAKeyGenerator,
     PasswordGenerator,
     LoremIpsumGenerator,
-    // Hash Generator
+    HashGenerator,
     // UUID generator
     // Regex Tester
     // URL Parser

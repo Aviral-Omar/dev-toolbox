@@ -7,23 +7,35 @@ description = "Everyday utilities for developers"
 repository = "https://github.com/avomar/dev-toolbox.git"
 
 [dependencies]
+adler2 = "2.0.1"
+argon2 = "0.5.3"
 base64 = "0.22.1"
+bcrypt = "0.19.2"
 chrono = "0.4.44"
+crc32fast = "1.5.0"
 flate2 = { version = "1.1.9", features = ["zlib-rs"] }
 futures-util = "0.3.32"
+hex = "0.4.3"
 i18n-embed = { version = "0.16.0", features = ["fluent-system", "desktop-requester"] }
 i18n-embed-fl = "0.10.0"
 jsonwebtoken = { version = "10.3.0", features = ["rust_crypto"] }
 lipsum = "0.9.1"
+md-5 = "0.11.0"
+murmur3 = "0.5.2"
 open = "5.3.3"
 passwords = "3.1.16"
 quick-xml = {version = "0.39.2", features = ["serialize"]}
 rand = "0.8.5"
+rfd = "0.17.2"
 rsa = "0.9.10"
 rust-embed = "8.11.0"
+rustc-hash = "2.1.3"
 serde = "1.0.228"
 serde-saphyr = "0.0.21"
 serde_json = "1.0.149"
+sha1 = "0.11.0"
+sha2 = "0.11.0"
+sha3 = "0.12.0"
 tokio = { version = "1.50.0", features = ["full"] }
 toml = "1.0.6"
 url = "2.5.8"
@@ -41,6 +53,7 @@ features = [
     "dbus-config",
     # Support creating additional application windows.
     "multi-window",
+    "rfd",
     # On app startup, focuses an existing instance if the app is already open
     "single-instance",
     # Uses tokio as the executor for the runtime

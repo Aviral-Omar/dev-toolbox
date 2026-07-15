@@ -46,7 +46,7 @@ pub(crate) fn status_bar<'a>(status: &'a str, page_name: &'a str) -> Element<'a,
     .width(Length::Fill)
     .style(|theme| {
         container::Style::default()
-            .background(theme.cosmic().bg_component_color())
+            .background(theme.current_container().component.base)
             .border(Border::default().rounded(theme.cosmic().radius_s()))
     })
     .into()
