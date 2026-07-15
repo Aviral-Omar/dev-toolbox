@@ -24,7 +24,7 @@ use {
     std::sync::Arc,
 };
 
-const BITS: [&str; 3] = ["1024", "2048", "4196"];
+const BITS: [&str; 3] = ["1024", "2048", "4096"];
 const PRIVATE_KEY_EDITOR_ID: &str = "private-key-editor";
 const PUBLIC_KEY_EDITOR_ID: &str = "public-key-editor";
 
