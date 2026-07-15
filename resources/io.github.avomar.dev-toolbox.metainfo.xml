@@ -90,15 +90,15 @@
     </screenshot>
     <screenshot>
       <image
-            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/gzip.png</image>
-      <caption>GZip Compressor/Decompressor Page</caption>
-      <caption xml:lang="cs">Stránka kompresoru a dekompresoru GZip</caption>
-    </screenshot>
-    <screenshot>
-      <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/base64.png</image>
       <caption>Base64 Encoder/Decoder Page</caption>
       <caption xml:lang="cs">Stránka kodéru a dekodéru Base64</caption>
+    </screenshot>
+    <screenshot>
+      <image
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/gzip.png</image>
+      <caption>GZip Compressor/Decompressor Page</caption>
+      <caption xml:lang="cs">Stránka kompresoru a dekompresoru GZip</caption>
     </screenshot>
     <screenshot>
       <image
@@ -126,12 +126,27 @@
     </screenshot>
     <screenshot>
       <image
+            >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/hash-generator.png</image>
+      <caption>Hash Generator Page</caption>
+    </screenshot>
+    <screenshot>
+      <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/lorem-ipsum.png</image>
       <caption>Lorem ipsum Generator Page</caption>
       <caption xml:lang="cs">Stránka generátoru Lorem Ipsum</caption>
     </screenshot>
   </screenshots>
   <releases>
+    <release version="3.0.0" date="2026-07-16">
+        <description>
+        <p>Release description</p>
+        <ul>
+            <li>Added Hash Generator Page</li>
+            <li>Updated libcosmic to add frosted glass support</li>
+            <li>Update app icon</li>
+        </ul>
+        </description>
+    </release>
     <release version="2.1.0" date="2026-05-03">
       <description>
       <p>Release description</p>
