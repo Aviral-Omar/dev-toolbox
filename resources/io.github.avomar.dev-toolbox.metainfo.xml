@@ -128,6 +128,7 @@
       <image
             >https://raw.githubusercontent.com/avomar/dev-toolbox/refs/heads/main/resources/screenshots/hash-generator.png</image>
       <caption>Hash Generator Page</caption>
+      <caption xml:lang="cs">Stránka generátoru hashů</caption>
     </screenshot>
     <screenshot>
       <image
