@@ -26,6 +26,8 @@
       <li xml:lang="cs">Debugger JWT</li>
       <li>Lorem ipsum Generator</li>
       <li xml:lang="cs">Generátor Lorem Ipsum</li>
+      <li>Hash Generator</li>
+      <li xml:lang="cs">Generátor hashů</li>
     </ul>
   </description>
   <icon type="stock">
